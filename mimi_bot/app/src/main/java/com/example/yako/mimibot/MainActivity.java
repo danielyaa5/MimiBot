@@ -17,9 +17,11 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
@@ -45,8 +47,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 
         // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mActionTitles));
+        mDrawerList.setAdapter(new DrawerItemAdapter(MainActivity.this, new ArrayList<String>(Arrays.asList(mActionTitles))));
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
