@@ -1,12 +1,23 @@
 package com.example.yako.mimibot;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+
+import com.jcraft.jsch.ChannelShell;
+import com.jcraft.jsch.JSch;
+import com.jcraft.jsch.Session;
+
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
+import java.io.PrintStream;
+import java.util.Properties;
 
 
 /**
@@ -23,11 +34,17 @@ public class HomeFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    static PrintStream commander;
+    static ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    static Session session;
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Button mConnectBtn;
 
     /**
      * Use this factory method to create a new instance of
@@ -64,10 +81,31 @@ public class HomeFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false);
+        View view = inflater.inflate(R.layout.fragment_home, container, false);
+
+        mConnectBtn = (Button) view.findViewById(R.id.connect_btn);
+        mConnectBtn.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                new AsyncTask<Integer, Void, Void>() {
+                    @Override
+                    protected Void doInBackground(Integer... params) {
+                        try {
+                            executeRemoteCommand("abby", "1lmiagmc!", "192.168.0.200", 22);
+                            commander.println("ls");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                        return null;
+                    }
+                }.execute(1);
+            }
+        });
+
+        return view;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
+
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
@@ -104,6 +142,36 @@ public class HomeFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(Uri uri);
+
     }
+
+    public static String executeRemoteCommand(String username, String password, String hostname, int port) throws Exception {
+        JSch jsch = new JSch();
+        session = jsch.getSession(username, hostname, port);
+        session.setPassword(password);
+
+        // Avoid asking for key confirmation
+        Properties prop = new Properties();
+        prop.put("StrictHostKeyChecking", "no");
+        session.setConfig(prop);
+
+        session.connect();
+
+        // SSH Channel
+        ChannelShell channelssh = (ChannelShell) session.openChannel("shell");
+        OutputStream inputstream_for_the_channel = channelssh.getOutputStream();
+        commander = new PrintStream(inputstream_for_the_channel, true);
+
+        channelssh.setOutputStream(baos);
+
+        channelssh.setOutputStream(System.out, true);
+
+        channelssh.connect();
+
+
+        //commander.close();        //session.disconnect();
+        return baos.toString();
+    }
+
 
 }
