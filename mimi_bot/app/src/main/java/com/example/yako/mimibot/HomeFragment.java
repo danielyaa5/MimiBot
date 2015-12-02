@@ -10,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 
 
 /**
@@ -20,7 +21,7 @@ import android.widget.LinearLayout;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment implements SshManager.SshConnectResponse {
+public class HomeFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     public static final String PREFS_NAME = "MyPrefsFile";
@@ -39,6 +40,8 @@ public class HomeFragment extends Fragment implements SshManager.SshConnectRespo
     private Button mConnectBtn, mYesBtn;
 
     private LinearLayout mSetupLL, mDefaultLL;
+
+    private ProgressBar mConnectProgress;
 
     /**
      * Use this factory method to create a new instance of
@@ -78,11 +81,35 @@ public class HomeFragment extends Fragment implements SshManager.SshConnectRespo
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
+        mConnectProgress = (ProgressBar) view.findViewById(R.id.connect_progress);
+
         mConnectBtn = (Button) view.findViewById(R.id.connect_btn);
+        if (SshManager.connectionStatus.toInt() == 2) {
+            mConnectBtn.setText("Disconnect");
+        }
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.i(TAG, "Connect Btn Pushed");
-                SshManager.attemptConnection("abby", "1lmiagmc!", "129.22.143.191", 22);
+                if (SshManager.connectionStatus.toInt() == 2) {
+                    Log.i(TAG, "Disconnect Btn Pushed");
+                } else {
+                    SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+                    Log.i(TAG, "Connect Btn Pushed");
+                    mConnectBtn.setVisibility(View.GONE);
+                    mConnectProgress.setVisibility(View.VISIBLE);
+                    SshManager.attemptConnection(settings.getString("username", ""), settings.getString("password", "")
+                            , settings.getString("hostname", ""), settings.getInt("port", -1), new SshConnectResponse() {
+                        @Override
+                        public void sshConnectCb() {
+                            mConnectProgress.setVisibility(View.GONE);
+                            if (SshManager.connectionStatus.toInt() == 2) {
+                                mConnectBtn.setText("Disconnect");
+                            } else {
+                                mConnectBtn.setText("Try Again");
+                            }
+                            mConnectBtn.setVisibility(View.VISIBLE);
+                        }
+                    });
+                }
             }
         });
 
@@ -100,11 +127,12 @@ public class HomeFragment extends Fragment implements SshManager.SshConnectRespo
         boolean settingsHostname = settings.getString("hostname", "").length() > 0;
         boolean settingsUsername = settings.getString("username", "").length() > 0;
         boolean settingsPassword = settings.getString("password", "").length() > 0;
+        boolean settingsPort = settings.getInt("port", -1) > -1;
 
         mSetupLL = (LinearLayout) view.findViewById(R.id.setup_ll);
         mDefaultLL = (LinearLayout) view.findViewById(R.id.default_home_ll);
 
-        if (settingsHostname && settingsUsername && settingsPassword) {
+        if (settingsHostname && settingsUsername && settingsPassword && settingsPort) {
             mDefaultLL.setVisibility(View.VISIBLE);
         } else {
             mSetupLL.setVisibility(View.VISIBLE);
@@ -136,11 +164,6 @@ public class HomeFragment extends Fragment implements SshManager.SshConnectRespo
     public void onDetach() {
         super.onDetach();
         mListener = null;
-    }
-
-    @Override
-    public void sshConnectCb() {
-
     }
 
     /**

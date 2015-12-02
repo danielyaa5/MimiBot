@@ -35,7 +35,7 @@ public class SettingsFragment extends Fragment {
 
     private Button mFinishedBtn;
 
-    private EditText mHostnameEt, mUsernameEt, mPasswordEt;
+    private EditText mHostnameEt, mUsernameEt, mPasswordEt, mPortEt;
 
     private OnFragmentInteractionListener mListener;
 
@@ -81,6 +81,7 @@ public class SettingsFragment extends Fragment {
         mHostnameEt = (EditText) view.findViewById(R.id.hostname_et);
         mUsernameEt = (EditText) view.findViewById(R.id.username_et);
         mPasswordEt = (EditText) view.findViewById(R.id.password_et);
+        mPortEt = (EditText) view.findViewById(R.id.port_et);
 
         mFinishedBtn = (Button) view.findViewById(R.id.finished_btn);
         mFinishedBtn.setOnClickListener(new View.OnClickListener() {
@@ -89,11 +90,12 @@ public class SettingsFragment extends Fragment {
                 SharedPreferences _settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
                 SharedPreferences.Editor editor = _settings.edit();
 
-                if (mHostnameEt.getText().toString().trim().length() > 3 && mUsernameEt.getText().toString().trim().length() > 0 && mPasswordEt.getText().toString().trim().length() > 0) {
+                if (mPortEt.getText().toString().trim().length() > 0 && mHostnameEt.getText().toString().trim().length() > 3 && mUsernameEt.getText().toString().trim().length() > 0 && mPasswordEt.getText().toString().trim().length() > 0) {
                     Log.i(TAG, "Saving prefrences");
                     editor.putString("hostname", mHostnameEt.getText().toString());
                     editor.putString("username", mUsernameEt.getText().toString());
                     editor.putString("password", mPasswordEt.getText().toString());
+                    editor.putInt("port", Integer.parseInt(mPortEt.getText().toString()));
                     editor.commit();
 
                     if (mListener != null) {
@@ -108,6 +110,7 @@ public class SettingsFragment extends Fragment {
         Log.i(TAG, "loaded hostname:" + hostname);
         String username = settings.getString("username", "");
         String password = settings.getString("password", "");
+        int port = settings.getInt("port", -1);
 
         if(hostname.length() > 0) {
             mHostnameEt.setText(hostname);
@@ -117,6 +120,9 @@ public class SettingsFragment extends Fragment {
         }
         if(password.length() > 0) {
             mPasswordEt.setText(password);
+        }
+        if(port > -1) {
+            mPortEt.setText(String.valueOf(port));
         }
 
 

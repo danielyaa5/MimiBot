@@ -2,7 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.yako.mimibot.HomeFragment">
+    tools:context="com.example.yako.mimibot.HomeFragment"
+    android:background="@color/lightblue500">
 
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
@@ -65,41 +66,48 @@
 
         <LinearLayout
             android:id="@+id/default_home_ll"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:orientation="vertical"
-            android:visibility="gone">
+            android:visibility="gone"
+            android:layout_centerHorizontal="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
                 android:orientation="horizontal">
 
                 <Button
                     android:id="@+id/settings_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="settings" />
+                    android:text="Settings" />
 
                 <Button
                     android:id="@+id/connect_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="connect" />
+                    android:text="Connect" />
+
+                <ProgressBar android:indeterminate="true"
+                    android:layout_width="50dp" android:layout_height="50dp"
+                    android:id="@+id/connect_progress" style="?android:attr/progressBarStyle"
+                    android:layout_gravity="center_vertical|center_horizontal"
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="center_horizontal"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:gravity="center_horizontal">
 
                 <Button
                     android:id="@+id/play_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="play" />
+                    android:text="Play" />
 
                 <Button
                     android:id="@+id/train_btn"

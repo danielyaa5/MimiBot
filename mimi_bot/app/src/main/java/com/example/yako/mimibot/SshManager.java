@@ -23,7 +23,8 @@ public class SshManager {
 
     private static final String TAG = "SshManager";
 
-    private static SshConnectStat connectionStatus;
+    public static SshConnectStat connectionStatus = SshConnectStat.DISCONNECTED;
+    ;
 
     public enum SshConnectStat {
         DISCONNECTED("Disconnected", 0),
@@ -41,20 +42,18 @@ public class SshManager {
         public String toString() {
             return stringValue;
         }
+
+        public int toInt() { return intValue; }
     }
 
     public interface OnTaskCompleted{
         void onTaskCompleted();
     }
 
-    public SshManager() {
-        connectionStatus = SshConnectStat.DISCONNECTED;
-    }
-
-    public static void attemptConnection(String username, String password, String hostname, int port) {
+    public static void attemptConnection(String username, String password, String hostname, int port, SshConnectResponse listener) {
         connectionStatus = SshConnectStat.CONNECTING;
 
-        SshConnect mySshConnect = new SshConnect(username, password, hostname, port);
+        SshConnect mySshConnect = new SshConnect(username, password, hostname, port, listener);
         mySshConnect.execute(1);
 
     }
@@ -96,11 +95,12 @@ public class SshManager {
 
         public SshConnectResponse listener = null;
 
-        public SshConnect(String username, String password, String hostname, int port) {
+        public SshConnect(String username, String password, String hostname, int port, SshConnectResponse listener) {
             this.username = username;
             this.password = password;
             this.hostname = hostname;
             this.port = port;
+            this.listener = listener;
         }
 
         @Override
@@ -116,8 +116,10 @@ public class SshManager {
                     if (asyncObject.getStatus() == AsyncTask.Status.RUNNING) {
                         connectionStatus = SshConnectStat.DISCONNECTED;
                         Log.i(TAG, "Finished connection task, result = " + SshManager.connectionStatus.toString());
-                        listener.sshConnectCb();
-                        asyncObject.cancel(false);
+                        if (listener != null) {
+                            listener.sshConnectCb();
+                        }
+                        asyncObject.cancel(true);
                         // Add any specific task you wish to do as your extended class variable works here as well.
                     }
                 }
@@ -130,10 +132,8 @@ public class SshManager {
             try {
                 executeRemoteCommand(username, password, hostname, port);
                 connectionStatus = SshConnectStat.CONNECTED;
-                listener.sshConnectCb();
             } catch (Exception e) {
                 connectionStatus = SshConnectStat.DISCONNECTED;
-                listener.sshConnectCb();
                 e.printStackTrace();
             }
             return null;
@@ -141,12 +141,9 @@ public class SshManager {
 
         @Override
         protected void onPostExecute(Void result) {
+            if (listener != null) listener.sshConnectCb();
             Log.i(TAG, "Finished connection task, result = " + SshManager.connectionStatus.toString());
         }
-    }
-
-    public interface SshConnectResponse {
-        void sshConnectCb();
     }
 
 
