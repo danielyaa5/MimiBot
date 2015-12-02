@@ -6,7 +6,6 @@ import android.app.FragmentManager;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
@@ -23,7 +22,7 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
 
     private CharSequence mDrawerTitle;
@@ -122,8 +121,9 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
-        Log.i(TAG, "fragment interaction heard, passed value for uri = " + uri.toString());
+    public void onFragmentInteraction(int pos) {
+        Log.i(TAG, "fragment interaction heard, change fragment to " + String.valueOf(pos));
+        selectItem(pos);
     }
 
     /* The click listner for ListView in the navigation drawer */
@@ -144,6 +144,10 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
             case "Home":
                 Log.i(TAG, "Navbar --> Home pressed");
                 fragmentClass = HomeFragment.class;
+                break;
+            case "Settings":
+                Log.i(TAG, "Navbar --> Settings pressed");
+                fragmentClass = SettingsFragment.class;
                 break;
             default:
                 fragmentClass = HomeFragment.class;
