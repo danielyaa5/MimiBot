@@ -3,21 +3,13 @@ package com.example.yako.mimibot;
 import android.app.Activity;
 import android.app.Fragment;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-
-import com.jcraft.jsch.ChannelShell;
-import com.jcraft.jsch.JSch;
-import com.jcraft.jsch.Session;
-
-import java.io.ByteArrayOutputStream;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Properties;
+import android.widget.Spinner;
 
 
 /**
@@ -28,15 +20,13 @@ import java.util.Properties;
  * Use the {@link HomeFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class HomeFragment extends Fragment {
+public class HomeFragment extends Fragment implements SshManager.SshConnectResponse{
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    static PrintStream commander;
-    static ByteArrayOutputStream baos = new ByteArrayOutputStream();
-    static Session session;
+    private static final String TAG = "HomeFragment";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -44,7 +34,9 @@ public class HomeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Button mConnectBtn;
+    private Button mConnectBtn, mYesBtn;
+
+    private Spinner sshConnectSpinner;
 
     /**
      * Use this factory method to create a new instance of
@@ -86,20 +78,12 @@ public class HomeFragment extends Fragment {
         mConnectBtn = (Button) view.findViewById(R.id.connect_btn);
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                new AsyncTask<Integer, Void, Void>() {
-                    @Override
-                    protected Void doInBackground(Integer... params) {
-                        try {
-                            executeRemoteCommand("abby", "1lmiagmc!", "192.168.0.200", 22);
-                            commander.println("ls");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                        return null;
-                    }
-                }.execute(1);
+                Log.i(TAG, "Connect Btn Pushed");
+                SshManager.attemptConnection("abby", "1lmiagmc!", "129.22.143.191", 22);
             }
         });
+
+        mYesBtn = (Button) view.findViewById(R.id.yes_btn);
 
         return view;
     }
@@ -129,6 +113,11 @@ public class HomeFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void sshConnectCb() {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -144,34 +133,5 @@ public class HomeFragment extends Fragment {
         public void onFragmentInteraction(Uri uri);
 
     }
-
-    public static String executeRemoteCommand(String username, String password, String hostname, int port) throws Exception {
-        JSch jsch = new JSch();
-        session = jsch.getSession(username, hostname, port);
-        session.setPassword(password);
-
-        // Avoid asking for key confirmation
-        Properties prop = new Properties();
-        prop.put("StrictHostKeyChecking", "no");
-        session.setConfig(prop);
-
-        session.connect();
-
-        // SSH Channel
-        ChannelShell channelssh = (ChannelShell) session.openChannel("shell");
-        OutputStream inputstream_for_the_channel = channelssh.getOutputStream();
-        commander = new PrintStream(inputstream_for_the_channel, true);
-
-        channelssh.setOutputStream(baos);
-
-        channelssh.setOutputStream(System.out, true);
-
-        channelssh.connect();
-
-
-        //commander.close();        //session.disconnect();
-        return baos.toString();
-    }
-
 
 }

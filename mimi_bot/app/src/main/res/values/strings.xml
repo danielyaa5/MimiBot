@@ -8,6 +8,9 @@
     <string name="drawer_close">Close navigation drawer</string>
     <string name="action_websearch">Web search</string>
     <string name="app_not_available">Sorry, there\'s no web browser available</string>
+    <string name="mimibot_connect">MimiBot wants to connect but you haven\'t set up your SSH settings.</string>
+    <string name="hey_there">Hey there!</string>
+    <string name="or">or...</string>
 
     <string-array name="actions_array">
         <item>Home</item>
