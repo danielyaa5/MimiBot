@@ -4,9 +4,14 @@ import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.SearchManager;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -22,7 +27,12 @@ import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener {
+import de.dfki.ccaal.gestures.GestureRecognitionService;
+import de.dfki.ccaal.gestures.IGestureRecognitionListener;
+import de.dfki.ccaal.gestures.IGestureRecognitionService;
+import de.dfki.ccaal.gestures.classifier.Distribution;
+
+public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
 
     private CharSequence mDrawerTitle;
@@ -32,6 +42,12 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+
+    /* GestureTrainer Framework Variables */
+    public static IGestureRecognitionService recognitionService;
+    public static String activeTrainingSet;
+    private final ServiceConnection serviceConnection = setupGestureConnection();
+    private IBinder gestureListenerStub = setupGestureListener();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +94,26 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         if (savedInstanceState == null) {
             selectItem(0);
         }
+    }
+
+    @Override
+    protected void onPause() {
+        try {
+            recognitionService.unregisterListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
+        } catch (RemoteException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        recognitionService = null;
+        getApplicationContext().unbindService(serviceConnection);
+        super.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        Intent bindIntent = new Intent(this, GestureRecognitionService.class);
+        getApplicationContext().bindService(bindIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        super.onResume();
     }
 
     @Override
@@ -200,5 +236,57 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         // Pass any configuration change to the drawer toggls
         mDrawerToggle.onConfigurationChanged(newConfig);
     }
+
+    private ServiceConnection setupGestureConnection() {
+        return new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                Log.i(TAG, "onServiceConnected");
+                recognitionService = IGestureRecognitionService.Stub.asInterface(service);
+                try {
+                    recognitionService.startClassificationMode(activeTrainingSet);
+                    recognitionService.registerListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
+                    Log.i(TAG, "gestureConnection service established!");
+                } catch (RemoteException e) {
+                    Log.e(TAG, "gestureConnection service failed to establish!");
+                    e.printStackTrace();
+                }
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                Log.i(TAG, "gestureConnection service disconnected!");
+
+            }
+        };
+    }
+
+    private IBinder setupGestureListener() {
+        return new IGestureRecognitionListener.Stub() {
+
+            @Override
+            public void onGestureLearned(String gestureName) throws RemoteException {
+                Toast.makeText(MainActivity.this, String.format("Gesture %s learned", gestureName), Toast.LENGTH_SHORT).show();
+                System.err.println("Gesture %s learned");
+            }
+
+            @Override
+            public void onTrainingSetDeleted(String trainingSet) throws RemoteException {
+                Toast.makeText(MainActivity.this, String.format("Training set %s deleted", trainingSet), Toast.LENGTH_SHORT).show();
+                System.err.println(String.format("Training set %s deleted", trainingSet));
+            }
+
+            @Override
+            public void onGestureRecognized(final Distribution distribution) throws RemoteException {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(MainActivity.this, String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()), Toast.LENGTH_LONG).show();
+                        System.err.println(String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()));
+                    }
+                });
+            }
+        };
+    }
+
 
 }
