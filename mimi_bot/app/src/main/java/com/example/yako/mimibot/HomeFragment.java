@@ -122,21 +122,7 @@ public class HomeFragment extends Fragment {
                     mConnectProgress.setVisibility(View.VISIBLE);
 
                     SshManager.attemptConnection(settings.getString("username", ""), settings.getString("password", "")
-                            , settings.getString("hostname", ""), settings.getInt("port", -1), new SshConnectResponse() {
-                        @Override
-                        public void sshConnectCb() {
-                            mConnectProgress.setVisibility(View.GONE);
-
-                            if (SshManager.connectionStatus.toInt() == 2) {
-                                mConnectBtn.setText("Disconnect");
-                                Toast.makeText(getActivity(), "CONNECTED to MimiBot!", Toast.LENGTH_SHORT).show();
-                            } else {
-                                mConnectBtn.setText("Try Again");
-                                Toast.makeText(getActivity(), "UNABLE TO CONNECT to MimiBot!", Toast.LENGTH_SHORT).show();
-                            }
-                            mConnectBtn.setVisibility(View.VISIBLE);
-                        }
-                    });
+                            , settings.getString("hostname", ""), settings.getInt("port", -1), onSshConnectResponse());
                 }
             }
         });
@@ -240,6 +226,24 @@ public class HomeFragment extends Fragment {
         // TODO: Update argument type and name
         public void onFragmentInteraction(int pos);
 
+    }
+
+    public SshConnectResponse onSshConnectResponse() {
+        return new SshConnectResponse() {
+            @Override
+            public void sshConnectCb() {
+                mConnectProgress.setVisibility(View.GONE);
+
+                if (SshManager.connectionStatus.toInt() == 2) {
+                    mConnectBtn.setText("Disconnect");
+                    Toast.makeText(getActivity(), "CONNECTED to MimiBot!", Toast.LENGTH_SHORT).show();
+                } else {
+                    mConnectBtn.setText("Try Again");
+                    Toast.makeText(getActivity(), "UNABLE TO CONNECT to MimiBot!", Toast.LENGTH_SHORT).show();
+                }
+                mConnectBtn.setVisibility(View.VISIBLE);
+            }
+        };
     }
 
 }
