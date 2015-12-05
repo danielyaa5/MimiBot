@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 
 /**
@@ -82,11 +83,34 @@ public class HomeFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_home, container, false);
 
         mConnectProgress = (ProgressBar) view.findViewById(R.id.connect_progress);
-
         mConnectBtn = (Button) view.findViewById(R.id.connect_btn);
-        if (SshManager.connectionStatus.toInt() == 2) {
-            mConnectBtn.setText("Disconnect");
+
+        switch (SshManager.connectionStatus.toInt()) {
+            case 0:
+                mConnectBtn.setText("Connect");
+                mConnectBtn.setVisibility(View.VISIBLE);
+                mConnectProgress.setVisibility(View.INVISIBLE);
+                break;
+            case 1:
+                mConnectBtn.setVisibility(View.INVISIBLE);
+                mConnectProgress.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                mConnectProgress.setVisibility(View.INVISIBLE);
+                mConnectBtn.setText("Disconnect");
+                mConnectBtn.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                mConnectProgress.setVisibility(View.INVISIBLE);
+                mConnectBtn.setText("Try Again");
+                mConnectBtn.setVisibility(View.VISIBLE);
+                break;
+            default:
+                mConnectBtn.setText("Connect");
+                mConnectBtn.setVisibility(View.VISIBLE);
+                mConnectProgress.setVisibility(View.INVISIBLE);
         }
+
         mConnectBtn.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 if (SshManager.connectionStatus.toInt() == 2) {
@@ -96,15 +120,19 @@ public class HomeFragment extends Fragment {
                     Log.i(TAG, "Connect Btn Pushed");
                     mConnectBtn.setVisibility(View.GONE);
                     mConnectProgress.setVisibility(View.VISIBLE);
+
                     SshManager.attemptConnection(settings.getString("username", ""), settings.getString("password", "")
                             , settings.getString("hostname", ""), settings.getInt("port", -1), new SshConnectResponse() {
                         @Override
                         public void sshConnectCb() {
                             mConnectProgress.setVisibility(View.GONE);
+
                             if (SshManager.connectionStatus.toInt() == 2) {
                                 mConnectBtn.setText("Disconnect");
+                                Toast.makeText(getActivity(), "CONNECTED to MimiBot!", Toast.LENGTH_SHORT).show();
                             } else {
                                 mConnectBtn.setText("Try Again");
+                                Toast.makeText(getActivity(), "UNABLE TO CONNECT to MimiBot!", Toast.LENGTH_SHORT).show();
                             }
                             mConnectBtn.setVisibility(View.VISIBLE);
                         }

@@ -1,7 +1,6 @@
 package com.example.yako.mimibot;
 
 import android.os.AsyncTask;
-import android.os.CountDownTimer;
 import android.util.Log;
 
 import com.jcraft.jsch.ChannelShell;
@@ -29,7 +28,8 @@ public class SshManager {
     public enum SshConnectStat {
         DISCONNECTED("Disconnected", 0),
         CONNECTING("Connecting", 1),
-        CONNECTED("Connected", 2);
+        CONNECTED("Connected", 2),
+        FAILED("Failed", 3);
 
         private String stringValue;
         private int intValue;
@@ -114,25 +114,7 @@ public class SshManager {
 
         @Override
         protected void onPreExecute() {
-            asyncObject = this;
-            new CountDownTimer(6000, 1000) {
-                public void onTick(long millisUntilFinished) {
-                    // You can monitor the progress here as well by changing the onTick() time
-                }
 
-                public void onFinish() {
-                    // stop async task if not in progress
-                    if (asyncObject.getStatus() == AsyncTask.Status.RUNNING && connectionStatus.toInt() != 2) {
-                        connectionStatus = SshConnectStat.DISCONNECTED;
-                        Log.i(TAG, "Finished connection task, result = " + SshManager.connectionStatus.toString());
-                        if (listener != null) {
-                            listener.sshConnectCb();
-                        }
-                        asyncObject.cancel(false);
-                        // Add any specific task you wish to do as your extended class variable works here as well.
-                    }
-                }
-            }.start();
         }
 
         @Override
@@ -150,6 +132,10 @@ public class SshManager {
 
         @Override
         protected void onPostExecute(Void result) {
+            if (connectionStatus.toInt() != 2) {
+                connectionStatus = SshConnectStat.FAILED;
+            }
+
             if (listener != null) listener.sshConnectCb();
             Log.i(TAG, "Finished connection task, result = " + SshManager.connectionStatus.toString());
         }
