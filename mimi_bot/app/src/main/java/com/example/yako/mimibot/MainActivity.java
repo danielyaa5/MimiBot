@@ -98,11 +98,14 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
 
     @Override
     protected void onPause() {
-        try {
-            recognitionService.unregisterListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
-        } catch (RemoteException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        Log.i(TAG, "onPause() called");
+        if (recognitionService != null){
+            try {
+                recognitionService.unregisterListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
         }
         recognitionService = null;
         getApplicationContext().unbindService(serviceConnection);
