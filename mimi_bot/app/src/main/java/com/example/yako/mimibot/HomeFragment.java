@@ -37,7 +37,7 @@ public class HomeFragment extends Fragment {
 
     private OnFragmentInteractionListener mListener;
 
-    private Button mConnectBtn, mYesBtn;
+    private Button mConnectBtn, mYesBtn, mSettingsBtn, mTeachBtn, mPlayBtn;
 
     private LinearLayout mSetupLL, mDefaultLL;
 
@@ -123,6 +123,36 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        mSettingsBtn = (Button) view.findViewById(R.id.settings_btn);
+        mSettingsBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(4);
+                }
+            }
+        });
+
+        mTeachBtn = (Button) view.findViewById(R.id.teach_btn);
+        mTeachBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(2);
+                }
+            }
+        });
+
+        mPlayBtn = (Button) view.findViewById(R.id.play_btn);
+        mPlayBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(1);
+                }
+            }
+        });
+
         SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
         boolean settingsHostname = settings.getString("hostname", "").length() > 0;
         boolean settingsUsername = settings.getString("username", "").length() > 0;
@@ -133,8 +163,10 @@ public class HomeFragment extends Fragment {
         mDefaultLL = (LinearLayout) view.findViewById(R.id.default_home_ll);
 
         if (settingsHostname && settingsUsername && settingsPassword && settingsPort) {
+            Log.i(TAG, "Opening default home");
             mDefaultLL.setVisibility(View.VISIBLE);
         } else {
+            Log.i(TAG, "Opening setup home");
             mSetupLL.setVisibility(View.VISIBLE);
         }
 

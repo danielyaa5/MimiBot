@@ -149,6 +149,14 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
                 Log.i(TAG, "Navbar --> Settings pressed");
                 fragmentClass = SettingsFragment.class;
                 break;
+            case "Teach":
+                Log.i(TAG, "Navbar --> Teach pressed");
+                fragmentClass = TeachFragment.class;
+                break;
+            case "Play":
+                Log.i(TAG, "Navbar --> Play pressed");
+                fragmentClass = PlayFragment.class;
+                break;
             default:
                 fragmentClass = HomeFragment.class;
         }

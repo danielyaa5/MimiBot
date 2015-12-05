@@ -51,6 +51,7 @@ public class SshManager {
     }
 
     public static void attemptConnection(String username, String password, String hostname, int port, SshConnectResponse listener) {
+        Log.i(TAG, username + "- " + password + "- " + hostname + "- " + String.valueOf(port));
         connectionStatus = SshConnectStat.CONNECTING;
 
         SshConnect mySshConnect = new SshConnect(username, password, hostname, port, listener);
@@ -88,6 +89,14 @@ public class SshManager {
         return baos.toString();
     }
 
+    public static void sendCommand(String command) {
+        if (connectionStatus.toInt() == 2) {
+            commander.println(command);
+        } else {
+            Log.e(TAG, "Cant send command while not connected");
+        }
+    }
+
     public static class SshConnect extends AsyncTask<Integer, Void, Void> {
         String username, password, hostname;
         int port;
@@ -113,13 +122,13 @@ public class SshManager {
 
                 public void onFinish() {
                     // stop async task if not in progress
-                    if (asyncObject.getStatus() == AsyncTask.Status.RUNNING) {
+                    if (asyncObject.getStatus() == AsyncTask.Status.RUNNING && connectionStatus.toInt() != 2) {
                         connectionStatus = SshConnectStat.DISCONNECTED;
                         Log.i(TAG, "Finished connection task, result = " + SshManager.connectionStatus.toString());
                         if (listener != null) {
                             listener.sshConnectCb();
                         }
-                        asyncObject.cancel(true);
+                        asyncObject.cancel(false);
                         // Add any specific task you wish to do as your extended class variable works here as well.
                     }
                 }

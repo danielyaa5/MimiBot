@@ -90,17 +90,20 @@ public class SettingsFragment extends Fragment {
                 SharedPreferences _settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
                 SharedPreferences.Editor editor = _settings.edit();
 
-                if (mPortEt.getText().toString().trim().length() > 0 && mHostnameEt.getText().toString().trim().length() > 3 && mUsernameEt.getText().toString().trim().length() > 0 && mPasswordEt.getText().toString().trim().length() > 0) {
-                    Log.i(TAG, "Saving prefrences");
-                    editor.putString("hostname", mHostnameEt.getText().toString());
-                    editor.putString("username", mUsernameEt.getText().toString());
-                    editor.putString("password", mPasswordEt.getText().toString());
-                    editor.putInt("port", Integer.parseInt(mPortEt.getText().toString()));
-                    editor.commit();
+                Log.i(TAG, "Saving prefrences");
+                editor.putString("hostname", mHostnameEt.getText().toString().trim());
+                editor.putString("username", mUsernameEt.getText().toString().trim());
+                editor.putString("password", mPasswordEt.getText().toString().trim());
 
-                    if (mListener != null) {
-                        mListener.onFragmentInteraction(0);
-                    }
+                if (mPortEt.getText().toString().trim().length() < 1) {
+                    editor.putInt("port", -1);
+                } else {
+                    editor.putInt("port", Integer.parseInt(mPortEt.getText().toString().trim()));
+                }
+                editor.commit();
+
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(0);
                 }
             }
         });
@@ -112,19 +115,18 @@ public class SettingsFragment extends Fragment {
         String password = settings.getString("password", "");
         int port = settings.getInt("port", -1);
 
-        if(hostname.length() > 0) {
+        if (hostname.length() > 0) {
             mHostnameEt.setText(hostname);
         }
-        if(username.length() > 0) {
+        if (username.length() > 0) {
             mUsernameEt.setText(username);
         }
-        if(password.length() > 0) {
+        if (password.length() > 0) {
             mPasswordEt.setText(password);
         }
-        if(port > -1) {
+        if (port > -1) {
             mPortEt.setText(String.valueOf(port));
         }
-
 
         return view;
     }

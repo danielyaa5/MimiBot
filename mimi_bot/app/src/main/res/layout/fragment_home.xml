@@ -45,7 +45,8 @@
                 android:layout_height="wrap_content"
                 android:text="YES, let&apos;s do this!"
                 android:id="@+id/yes_btn"
-                android:layout_marginTop="150dp" />
+                android:layout_marginTop="150dp"
+                android:background="@color/teal50"/>
 
             <TextView
                 android:layout_width="wrap_content"
@@ -53,6 +54,8 @@
                 android:textAppearance="?android:attr/textAppearanceMedium"
                 android:text="@string/or"
                 android:id="@+id/or_tv"
+                android:layout_marginTop="3dp"
+                android:layout_marginBottom="4dp"
                 android:layout_marginLeft="15dp"/>
 
             <Button
@@ -60,7 +63,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tell me more about Mimi!"
-                android:id="@+id/more_btn" />
+                android:id="@+id/more_btn"
+                android:background="@color/teal50"/>
 
         </LinearLayout>
 
@@ -81,18 +85,34 @@
                     android:id="@+id/settings_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Settings" />
+                    android:text="Settings"
+                    android:layout_margin="10dp"
+                    android:drawableTop="@drawable/ic_settings_black_48dp"
+                    android:background="@color/teal200"
+                    android:paddingLeft="14dp"
+                    android:paddingRight="14dp"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" />
+
 
                 <Button
                     android:id="@+id/connect_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Connect" />
+                    android:text="Connect"
+                    android:layout_margin="10dp"
+                    android:drawableTop="@drawable/ic_wifi_tethering_black_48dp"
+                    android:background="@color/teal200"
+                    android:paddingLeft="11dp"
+                    android:paddingRight="11dp"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="5dp" />
 
                 <ProgressBar android:indeterminate="true"
                     android:layout_width="50dp" android:layout_height="50dp"
                     android:id="@+id/connect_progress" style="?android:attr/progressBarStyle"
                     android:layout_gravity="center_vertical|center_horizontal"
+                    android:layout_marginLeft="13dp"
                     android:visibility="gone"/>
 
             </LinearLayout>
@@ -107,13 +127,31 @@
                     android:id="@+id/play_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Play" />
+                    android:text="Play"
+                    android:layout_margin="10dp"
+                    android:paddingLeft="22dp"
+                    android:paddingRight="22dp"
+                    android:drawableTop="@drawable/ic_videogame_asset_black_48dp"
+                    android:background="@color/teal200"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" />
+
 
                 <Button
-                    android:id="@+id/train_btn"
+                    android:id="@+id/teach_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Train" />
+                    android:text="Teach"
+                    android:paddingLeft="23dp"
+                    android:paddingRight="23dp"
+                    android:drawableTop="@drawable/ic_account_balance_black_48dp"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginBottom="10dp"
+                    android:background="@color/teal200"
+                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp" />
             </LinearLayout>
 
         </LinearLayout>
