@@ -50,7 +50,6 @@ import de.dfki.ccaal.gestures.IGestureRecognitionService;
 import de.dfki.ccaal.gestures.classifier.Distribution;
 
 public class GestureTrainer extends Activity {
-
 	IGestureRecognitionService recognitionService;
 	String activeTrainingSet;
 

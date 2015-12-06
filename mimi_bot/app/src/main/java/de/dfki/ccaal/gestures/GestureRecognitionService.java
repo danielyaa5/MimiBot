@@ -21,14 +21,16 @@
  */
 package de.dfki.ccaal.gestures;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.util.Log;
+
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import de.dfki.ccaal.gestures.classifier.Distribution;
 import de.dfki.ccaal.gestures.classifier.GestureClassifier;
 import de.dfki.ccaal.gestures.classifier.featureExtraction.NormedGridExtractor;
@@ -36,6 +38,7 @@ import de.dfki.ccaal.gestures.recorder.GestureRecorder;
 import de.dfki.ccaal.gestures.recorder.GestureRecorderListener;
 
 public class GestureRecognitionService extends Service implements GestureRecorderListener {
+	private static final String TAG = "GestureRecService";
 
 	GestureRecorder recorder;
 	GestureClassifier classifier;
@@ -83,6 +86,7 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 
 		@Override
 		public void startLearnMode(String trainingSetName, String gestureName) throws RemoteException {
+			Log.i(TAG, "startLearnMode(), trainingSetName = " + trainingSetName + ", gestureName = " + gestureName);
 			activeTrainingSet = trainingSetName;
 			activeLearnLabel = gestureName;
 			isLearning = true;
@@ -106,6 +110,7 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 
 		@Override
 		public List<String> getGestureList(String trainingSet) throws RemoteException {
+			Log.i(TAG, "getGestureList(), trainSet = " + trainingSet);
 			return classifier.getLabels(trainingSet);
 		}
 
@@ -125,6 +130,11 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 		@Override
 		public boolean isLearning() throws RemoteException {
 			return isLearning;
+		}
+
+		@Override
+		public boolean isClassifying() throws RemoteException {
+			return isClassifying;
 		}
 
 		@Override

@@ -22,6 +22,7 @@
 package de.dfki.ccaal.gestures.classifier;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,6 +39,7 @@ import de.dfki.ccaal.gestures.Gesture;
 import de.dfki.ccaal.gestures.classifier.featureExtraction.IFeatureExtractor;
 
 public class GestureClassifier {
+	private static final String TAG = "GestureClassifier";
 
 	protected List<Gesture> trainingSet = Collections.emptyList();
 	protected IFeatureExtractor featureExtractor;
@@ -76,6 +78,7 @@ public class GestureClassifier {
 
 	@SuppressWarnings("unchecked")
 	public void loadTrainingSet(String trainingSetName) {
+		Log.i(TAG, "LoadTrainingSet(), trainingSetName = " + trainingSetName);
 		if (trainingSetName != null && !trainingSetName.equals(activeTrainingSet)) {
 			activeTrainingSet = trainingSetName;
 			FileInputStream input;

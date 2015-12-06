@@ -26,6 +26,8 @@ interface IGestureRecognitionService {
 	List<String> getGestureList(String trainingSet);
 	
 	boolean isLearning();
+
+	boolean isClassifying();
 } 
 
 
