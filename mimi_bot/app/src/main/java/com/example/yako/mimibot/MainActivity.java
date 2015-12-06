@@ -24,6 +24,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.yako.mimibot.pages.HomeFragment;
+import com.example.yako.mimibot.pages.PlayFragment;
+import com.example.yako.mimibot.pages.SettingsFragment;
+import com.example.yako.mimibot.pages.TeachFragment;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -32,7 +37,7 @@ import de.dfki.ccaal.gestures.IGestureRecognitionListener;
 import de.dfki.ccaal.gestures.IGestureRecognitionService;
 import de.dfki.ccaal.gestures.classifier.Distribution;
 
-public class MainActivity extends Activity implements com.example.yako.mimibot.HomeFragment.OnFragmentInteractionListener, com.example.yako.mimibot.SettingsFragment.OnFragmentInteractionListener, com.example.yako.mimibot.TeachFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
 
     private CharSequence mDrawerTitle;
@@ -182,22 +187,22 @@ public class MainActivity extends Activity implements com.example.yako.mimibot.H
         switch(action) {
             case "Home":
                 Log.i(TAG, "Navbar --> Home pressed");
-                fragmentClass = com.example.yako.mimibot.HomeFragment.class;
+                fragmentClass = HomeFragment.class;
                 break;
             case "Settings":
                 Log.i(TAG, "Navbar --> Settings pressed");
-                fragmentClass = com.example.yako.mimibot.SettingsFragment.class;
+                fragmentClass = SettingsFragment.class;
                 break;
             case "Teach":
                 Log.i(TAG, "Navbar --> Teach pressed");
-                fragmentClass = com.example.yako.mimibot.TeachFragment.class;
+                fragmentClass = TeachFragment.class;
                 break;
             case "Play":
                 Log.i(TAG, "Navbar --> Play pressed");
-                fragmentClass = com.example.yako.mimibot.PlayFragment.class;
+                fragmentClass = PlayFragment.class;
                 break;
             default:
-                fragmentClass = com.example.yako.mimibot.HomeFragment.class;
+                fragmentClass = HomeFragment.class;
         }
 
         try {
