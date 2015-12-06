@@ -250,7 +250,7 @@ public class TeachFragment extends Fragment {
     @Override
     public void onPause() {
         Log.i(TAG, "onPause() called");
-        if (recognitionService != null){
+        if (recognitionService != null) {
             try {
                 recognitionService.unregisterListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
             } catch (RemoteException e) {
@@ -287,7 +287,7 @@ public class TeachFragment extends Fragment {
 
             public void onServiceDisconnected(ComponentName className) {
                 Log.i(TAG, "gestureConnection service disconnected!");
-
+                recognitionService = null;
             }
         };
     }
@@ -298,24 +298,24 @@ public class TeachFragment extends Fragment {
             @Override
             public void onGestureLearned(String gestureName) throws RemoteException {
                 Toast.makeText(getActivity(), String.format("Gesture %s learned", gestureName), Toast.LENGTH_SHORT).show();
-                System.err.println("Gesture %s learned");
+                Log.i(TAG, String.format("Gesture %s learned", gestureName));
             }
 
             @Override
             public void onTrainingSetDeleted(String trainingSet) throws RemoteException {
                 Toast.makeText(getActivity(), String.format("Training set %s deleted", trainingSet), Toast.LENGTH_SHORT).show();
-                System.err.println(String.format("Training set %s deleted", trainingSet));
+                Log.e(TAG, String.format("Training set %s deleted", trainingSet));
             }
 
             @Override
             public void onGestureRecognized(final Distribution distribution) throws RemoteException {
-                getActivity().runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getActivity(), String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()), Toast.LENGTH_LONG).show();
-                        System.err.println(String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()));
-                    }
-                });
+//                getActivity().runOnUiThread(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        Toast.makeText(getActivity(), String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()), Toast.LENGTH_LONG).show();
+//                        System.err.println(String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()));
+//                    }
+//                });
             }
         };
     }

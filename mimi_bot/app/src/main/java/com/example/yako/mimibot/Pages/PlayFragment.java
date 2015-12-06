@@ -2,16 +2,31 @@ package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.example.yako.mimibot.R;
 import com.example.yako.mimibot.SshManager;
 import com.example.yako.mimibot.TrainedGesturesAdapter;
+
+import java.util.List;
+
+import de.dfki.ccaal.gestures.GestureRecognitionService;
+import de.dfki.ccaal.gestures.IGestureRecognitionListener;
+import de.dfki.ccaal.gestures.IGestureRecognitionService;
+import de.dfki.ccaal.gestures.classifier.Distribution;
 
 
 /**
@@ -30,7 +45,6 @@ public class PlayFragment extends Fragment {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
-    private String trainingSet;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -40,6 +54,11 @@ public class PlayFragment extends Fragment {
     private TrainedGesturesAdapter trainedGesturesAdapter;
 
     private OnFragmentInteractionListener mListener;
+
+    private IGestureRecognitionService recognitionService;
+    private String trainingSet;
+    private final ServiceConnection serviceConnection = setupGestureConnection();
+    private IBinder gestureListenerStub = setupGestureListener();
 
     /**
      * Use this factory method to create a new instance of
@@ -140,6 +159,23 @@ public class PlayFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onResume() {
+        trainingSet = (getActivity().getIntent().getExtras() != null) ? getActivity().getIntent().getExtras().get("trainingSetName").toString() : null;
+        Intent bindIntent = new Intent(getActivity(), GestureRecognitionService.class);
+        Log.i(TAG, "Training set = " + trainingSet);
+        getActivity().getApplicationContext().bindService(bindIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        recognitionService = null;
+        getActivity().getApplicationContext().unbindService(serviceConnection);
+        super.onPause();
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -153,6 +189,72 @@ public class PlayFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         public void onFragmentInteraction(int pos);
+    }
+
+    private ServiceConnection setupGestureConnection() {
+        return new ServiceConnection() {
+
+            @Override
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                recognitionService = IGestureRecognitionService.Stub.asInterface(service);
+                try {
+                    List<String> items = recognitionService.getGestureList(trainingSet);
+                    trainedGesturesLV = (ListView) getView().findViewById(R.id.trained_gesture_list_container_lv);
+                    trainedGesturesAdapter = new TrainedGesturesAdapter(getActivity(), items);
+                    trainedGesturesLV.setAdapter(trainedGesturesAdapter);
+                    Log.i(TAG, "gestureConnection service established!");
+                    Log.i(TAG, "trainingSet = " + items.toString());
+                } catch (RemoteException e) {
+                    Log.i(TAG, "gestureConnection service failed to established!");
+                    Log.e(TAG, "Error getting gesture list");
+                    e.printStackTrace();
+                }
+//                lv.setTextFilterEnabled(true);
+//                registerForContextMenu(lv);
+//
+//                lv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+//                        // When clicked, show a toast with the TextView text
+//                        Toast.makeText(getApplicationContext(), ((TextView) view).getText(), Toast.LENGTH_LONG).show();
+//                        System.err.println(((TextView) view).getText());
+//                    }
+//                });
+            }
+
+            @Override
+            public void onServiceDisconnected(ComponentName className) {
+                Log.i(TAG, "gestureConnection service disconnected!");
+                recognitionService = null;
+            }
+
+        };
+    }
+    private IBinder setupGestureListener() {
+        return new IGestureRecognitionListener.Stub() {
+
+            @Override
+            public void onGestureLearned(String gestureName) throws RemoteException {
+//                Toast.makeText(getActivity(), String.format("Gesture %s learned", gestureName), Toast.LENGTH_SHORT).show();
+//                System.err.println("Gesture %s learned");
+            }
+
+            @Override
+            public void onTrainingSetDeleted(String trainingSet) throws RemoteException {
+                Toast.makeText(getActivity(), String.format("Training set %s deleted", trainingSet), Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Training set" + trainingSet.toString() + " deleted");
+            }
+
+            @Override
+            public void onGestureRecognized(final Distribution distribution) throws RemoteException {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()), Toast.LENGTH_LONG).show();
+                        Log.e(TAG, String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()));
+                    }
+                });
+            }
+        };
     }
 
 }
