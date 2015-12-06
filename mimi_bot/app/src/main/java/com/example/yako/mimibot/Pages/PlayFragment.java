@@ -78,16 +78,7 @@ public class PlayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play, container, false);
 
-//        try {
-//            List<String> items = MainActivity.recognitionService.getGestureList(trainingSet);
-//            trainedGesturesLV = (ListView) view.findViewById(R.id.trained_gesture_list_container_lv);
-//            trainedGesturesAdapter = new TrainedGesturesAdapter(getActivity(), items);
-//            trainedGesturesLV.setAdapter(trainedGesturesAdapter);
-//        } catch (RemoteException e) {
-//            Log.e(TAG, "Error getting gesture list");
-//            e.printStackTrace();
-//        }
-
+//        w
         mMotion1 = (Button) view.findViewById(R.id.motion_1_btn);
         mMotion2 = (Button) view.findViewById(R.id.motion_2_btn);
         mMotion3 = (Button) view.findViewById(R.id.motion_3_btn);
