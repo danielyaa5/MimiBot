@@ -3,20 +3,15 @@ package com.example.yako.mimibot.pages;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
-import android.os.RemoteException;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
 
-import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
 import com.example.yako.mimibot.SshManager;
 import com.example.yako.mimibot.TrainedGesturesAdapter;
-
-import java.util.List;
 
 
 /**
@@ -83,15 +78,15 @@ public class PlayFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play, container, false);
 
-        try {
-            List<String> items = MainActivity.recognitionService.getGestureList(trainingSet);
-            trainedGesturesLV = (ListView) view.findViewById(R.id.trained_gesture_list_container_lv);
-            trainedGesturesAdapter = new TrainedGesturesAdapter(getActivity(), items);
-            trainedGesturesLV.setAdapter(trainedGesturesAdapter);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Error getting gesture list");
-            e.printStackTrace();
-        }
+//        try {
+//            List<String> items = MainActivity.recognitionService.getGestureList(trainingSet);
+//            trainedGesturesLV = (ListView) view.findViewById(R.id.trained_gesture_list_container_lv);
+//            trainedGesturesAdapter = new TrainedGesturesAdapter(getActivity(), items);
+//            trainedGesturesLV.setAdapter(trainedGesturesAdapter);
+//        } catch (RemoteException e) {
+//            Log.e(TAG, "Error getting gesture list");
+//            e.printStackTrace();
+//        }
 
         mMotion1 = (Button) view.findViewById(R.id.motion_1_btn);
         mMotion2 = (Button) view.findViewById(R.id.motion_2_btn);

@@ -48,6 +48,7 @@ public class HomeFragment extends Fragment {
 
     private ProgressBar mConnectProgress;
 
+    private Activity mActivity;
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
@@ -202,6 +203,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+        mActivity = activity;
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
@@ -240,10 +242,10 @@ public class HomeFragment extends Fragment {
 
                 if (SshManager.connectionStatus.toInt() == 2) {
                     mConnectBtn.setText("Disconnect");
-                    Toast.makeText(getActivity(), "CONNECTED to MimiBot!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "CONNECTED to MimiBot!", Toast.LENGTH_SHORT).show();
                 } else {
                     mConnectBtn.setText("Try Again");
-                    Toast.makeText(getActivity(), "UNABLE TO CONNECT to MimiBot!", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(mActivity, "UNABLE TO CONNECT to MimiBot!", Toast.LENGTH_SHORT).show();
                 }
                 mConnectBtn.setVisibility(View.VISIBLE);
             }

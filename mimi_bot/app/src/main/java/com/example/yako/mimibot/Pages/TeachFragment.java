@@ -3,9 +3,13 @@ package com.example.yako.mimibot.pages;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Fragment;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -16,11 +20,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
 
 import de.dfki.android.gestureTrainer.GestureOverview;
+import de.dfki.ccaal.gestures.GestureRecognitionService;
+import de.dfki.ccaal.gestures.IGestureRecognitionListener;
+import de.dfki.ccaal.gestures.IGestureRecognitionService;
+import de.dfki.ccaal.gestures.classifier.Distribution;
 
 
 /**
@@ -44,6 +52,11 @@ public class TeachFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private IGestureRecognitionService recognitionService;
+    private String activeTrainingSet;
+    private final ServiceConnection serviceConnection = setupGestureConnection();
+    private IBinder gestureListenerStub = setupGestureListener();
 
     /**
      * Use this factory method to create a new instance of
@@ -84,7 +97,7 @@ public class TeachFragment extends Fragment {
         final TextView activeTrainingSetText = (TextView) view.findViewById(R.id.activeTrainingSet);
         final EditText trainingSetText = (EditText) view.findViewById(R.id.trainingSetName);
         final EditText editText = (EditText) view.findViewById(R.id.gestureName);
-        MainActivity.activeTrainingSet = editText.getText().toString();
+        activeTrainingSet = editText.getText().toString();
         final Button startTrainButton = (Button) view.findViewById(R.id.trainButton);
         final Button deleteTrainingSetButton = (Button) view.findViewById(R.id.deleteTrainingSetButton);
         final Button changeTrainingSetButton = (Button) view.findViewById(R.id.startNewSetButton);
@@ -110,7 +123,7 @@ public class TeachFragment extends Fragment {
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
 
                 try {
-                    MainActivity.recognitionService.setThreshold(progress / 10.0f);
+                    recognitionService.setThreshold(progress / 10.0f);
                 } catch (RemoteException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
@@ -122,16 +135,16 @@ public class TeachFragment extends Fragment {
         startTrainButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.i(TAG, "Start Training Pushed");
-                if (MainActivity.recognitionService != null) {
+                if (recognitionService != null) {
                     try {
-                        if (!MainActivity.recognitionService.isLearning()) {
+                        if (!recognitionService.isLearning()) {
                             Log.i(TAG, "Stop Training");
                             startTrainButton.setText("Stop Training");
                             editText.setEnabled(false);
                             deleteTrainingSetButton.setEnabled(false);
                             changeTrainingSetButton.setEnabled(false);
                             trainingSetText.setEnabled(false);
-                            MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, editText.getText().toString());
+                            recognitionService.startLearnMode(activeTrainingSet, editText.getText().toString());
                         } else {
                             Log.i(TAG, "Start Training");
                             startTrainButton.setText("Start Training");
@@ -139,7 +152,7 @@ public class TeachFragment extends Fragment {
                             deleteTrainingSetButton.setEnabled(true);
                             changeTrainingSetButton.setEnabled(true);
                             trainingSetText.setEnabled(true);
-                            MainActivity.recognitionService.stopLearnMode();
+                            recognitionService.stopLearnMode();
                         }
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
@@ -148,16 +161,17 @@ public class TeachFragment extends Fragment {
                 }
             }
         });
+
         changeTrainingSetButton.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View arg0) {
-                MainActivity.activeTrainingSet = trainingSetText.getText().toString();
-                activeTrainingSetText.setText(MainActivity.activeTrainingSet);
+                activeTrainingSet = trainingSetText.getText().toString();
+                activeTrainingSetText.setText(activeTrainingSet);
 
-                if (MainActivity.recognitionService != null) {
+                if (recognitionService != null) {
                     try {
-                        MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+                        recognitionService.startClassificationMode(activeTrainingSet);
                     } catch (RemoteException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -174,9 +188,9 @@ public class TeachFragment extends Fragment {
                 AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
                 builder.setMessage("You really want to delete the training set?").setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        if (MainActivity.recognitionService != null) {
+                        if (recognitionService != null) {
                             try {
-                                MainActivity.recognitionService.deleteTrainingSet(MainActivity.activeTrainingSet);
+                                recognitionService.deleteTrainingSet(activeTrainingSet);
                             } catch (RemoteException e) {
                                 // TODO Auto-generated catch block
                                 e.printStackTrace();
@@ -201,7 +215,7 @@ public class TeachFragment extends Fragment {
             case R.id.edit_gestures:
                 Intent editGesturesIntent = new Intent().setClass(getActivity(), GestureOverview.class);
                 editGesturesIntent.setPackage("de.dfki.ccaal.gestures");
-                editGesturesIntent.putExtra("trainingSetName", MainActivity.activeTrainingSet);
+                editGesturesIntent.putExtra("trainingSetName", activeTrainingSet);
                 startActivity(editGesturesIntent);
                 return true;
 
@@ -231,6 +245,79 @@ public class TeachFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    @Override
+    public void onPause() {
+        Log.i(TAG, "onPause() called");
+        if (recognitionService != null){
+            try {
+                recognitionService.unregisterListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
+            } catch (RemoteException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        recognitionService = null;
+        getActivity().getApplicationContext().unbindService(serviceConnection);
+        super.onPause();
+    }
+
+    @Override
+    public void onResume() {
+        Intent bindIntent = new Intent(getActivity(), GestureRecognitionService.class);
+        getActivity().getApplicationContext().bindService(bindIntent, serviceConnection, Context.BIND_AUTO_CREATE);
+        super.onResume();
+    }
+
+    private ServiceConnection setupGestureConnection() {
+        return new ServiceConnection() {
+
+            public void onServiceConnected(ComponentName className, IBinder service) {
+                recognitionService = IGestureRecognitionService.Stub.asInterface(service);
+                try {
+                    recognitionService.startClassificationMode(activeTrainingSet);
+                    recognitionService.registerListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
+                    Log.i(TAG, "gestureConnection service established!");
+                } catch (RemoteException e) {
+                    Log.e(TAG, "gestureConnection service failed to establish!");
+                    e.printStackTrace();
+                }
+            }
+
+            public void onServiceDisconnected(ComponentName className) {
+                Log.i(TAG, "gestureConnection service disconnected!");
+
+            }
+        };
+    }
+
+    private IBinder setupGestureListener() {
+        return new IGestureRecognitionListener.Stub() {
+
+            @Override
+            public void onGestureLearned(String gestureName) throws RemoteException {
+                Toast.makeText(getActivity(), String.format("Gesture %s learned", gestureName), Toast.LENGTH_SHORT).show();
+                System.err.println("Gesture %s learned");
+            }
+
+            @Override
+            public void onTrainingSetDeleted(String trainingSet) throws RemoteException {
+                Toast.makeText(getActivity(), String.format("Training set %s deleted", trainingSet), Toast.LENGTH_SHORT).show();
+                System.err.println(String.format("Training set %s deleted", trainingSet));
+            }
+
+            @Override
+            public void onGestureRecognized(final Distribution distribution) throws RemoteException {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getActivity(), String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()), Toast.LENGTH_LONG).show();
+                        System.err.println(String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()));
+                    }
+                });
+            }
+        };
     }
 
     /**
