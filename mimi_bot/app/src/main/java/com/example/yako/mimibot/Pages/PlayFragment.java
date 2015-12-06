@@ -1,4 +1,4 @@
-package com.example.yako.mimibot;
+package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -10,6 +10,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ListView;
+
+import com.example.yako.mimibot.MainActivity;
+import com.example.yako.mimibot.R;
+import com.example.yako.mimibot.SshManager;
+import com.example.yako.mimibot.TrainedGesturesAdapter;
 
 import java.util.List;
 

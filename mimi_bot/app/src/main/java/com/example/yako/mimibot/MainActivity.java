@@ -32,7 +32,7 @@ import de.dfki.ccaal.gestures.IGestureRecognitionListener;
 import de.dfki.ccaal.gestures.IGestureRecognitionService;
 import de.dfki.ccaal.gestures.classifier.Distribution;
 
-public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements com.example.yako.mimibot.HomeFragment.OnFragmentInteractionListener, com.example.yako.mimibot.SettingsFragment.OnFragmentInteractionListener, com.example.yako.mimibot.TeachFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
 
     private CharSequence mDrawerTitle;
@@ -182,22 +182,22 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         switch(action) {
             case "Home":
                 Log.i(TAG, "Navbar --> Home pressed");
-                fragmentClass = HomeFragment.class;
+                fragmentClass = com.example.yako.mimibot.HomeFragment.class;
                 break;
             case "Settings":
                 Log.i(TAG, "Navbar --> Settings pressed");
-                fragmentClass = SettingsFragment.class;
+                fragmentClass = com.example.yako.mimibot.SettingsFragment.class;
                 break;
             case "Teach":
                 Log.i(TAG, "Navbar --> Teach pressed");
-                fragmentClass = TeachFragment.class;
+                fragmentClass = com.example.yako.mimibot.TeachFragment.class;
                 break;
             case "Play":
                 Log.i(TAG, "Navbar --> Play pressed");
-                fragmentClass = PlayFragment.class;
+                fragmentClass = com.example.yako.mimibot.PlayFragment.class;
                 break;
             default:
-                fragmentClass = HomeFragment.class;
+                fragmentClass = com.example.yako.mimibot.HomeFragment.class;
         }
 
         try {

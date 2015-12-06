@@ -1,4 +1,4 @@
-package com.example.yako.mimibot;
+package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -12,6 +12,10 @@ import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+
+import com.example.yako.mimibot.R;
+import com.example.yako.mimibot.SshConnectResponse;
+import com.example.yako.mimibot.SshManager;
 
 
 /**

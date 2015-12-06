@@ -1,4 +1,4 @@
-package com.example.yako.mimibot;
+package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -16,6 +16,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import com.example.yako.mimibot.MainActivity;
+import com.example.yako.mimibot.R;
 
 import de.dfki.android.gestureTrainer.GestureOverview;
 
