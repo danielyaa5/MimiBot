@@ -3,10 +3,15 @@ package com.example.yako.mimibot;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ListView;
+
+import java.util.List;
 
 
 /**
@@ -18,16 +23,21 @@ import android.widget.Button;
  * create an instance of this fragment.
  */
 public class PlayFragment extends Fragment {
+    private static final String TAG = "PlayFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+    private String trainingSet;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
     private Button mMotion1, mMotion2, mMotion3, mMotion4;
+    private ListView trainedGesturesLV;
+    private TrainedGesturesAdapter trainedGesturesAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -67,6 +77,16 @@ public class PlayFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_play, container, false);
+
+        try {
+            List<String> items = MainActivity.recognitionService.getGestureList(trainingSet);
+            trainedGesturesLV = (ListView) view.findViewById(R.id.trained_gesture_list_container_lv);
+            trainedGesturesAdapter = new TrainedGesturesAdapter(getActivity(), items);
+            trainedGesturesLV.setAdapter(trainedGesturesAdapter);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error getting gesture list");
+            e.printStackTrace();
+        }
 
         mMotion1 = (Button) view.findViewById(R.id.motion_1_btn);
         mMotion2 = (Button) view.findViewById(R.id.motion_2_btn);

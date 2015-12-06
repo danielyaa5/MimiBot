@@ -10,6 +10,11 @@
         android:layout_height="match_parent"
         android:gravity="center_vertical|center_horizontal">
 
+        <ListView
+            android:id="@+id/trained_gesture_list_container_lv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"></ListView>
+
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
