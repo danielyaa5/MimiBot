@@ -90,7 +90,7 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
 
-        MainActivity.activeTrainingSet = "mimi_capable_training_set";
+        MainActivity.activeTrainingSet = MIMI_TRAINING_SET;
 
     }
 

@@ -27,8 +27,9 @@ import java.util.List;
  * create an instance of this fragment.
  */
 public class GestureCtrlFragment extends Fragment {
-    private static final String MIMI_TRAINING_SET = "Mimi Capable Gestures";
     private static final String TAG = "GestureCtrlFragment";
+
+    private static final String MIMI_TRAINING_SET = "Mimi Capable Gestures";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,6 +45,8 @@ public class GestureCtrlFragment extends Fragment {
     private LinearLayout mNoGesturesLL, mGestureCtrlsLL;
     private ListView mGestureCtrlsList;
     private Button mTeachBtn;
+
+    private List<String> mItems;
 
     /**
      * Use this factory method to create a new instance of
@@ -74,6 +77,14 @@ public class GestureCtrlFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        MainActivity.activeTrainingSet = MIMI_TRAINING_SET;
+        try {
+            MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Something went wrong while trying to startClassificationMode");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -87,16 +98,8 @@ public class GestureCtrlFragment extends Fragment {
         mGestureCtrlsList = (ListView) view.findViewById(R.id.gesture_ctrls_list);
         mTeachBtn = (Button) view.findViewById(R.id.gc_teach_btn);
 
-        List<String> items = null;
-        try {
-            items = MainActivity.recognitionService.getGestureList(MIMI_TRAINING_SET);
-        } catch (RemoteException e) {
-            Log.e(TAG, "Something went wrong when getting gesture list");
-            e.printStackTrace();
-        }
-
-        if (items != null && items.size() > 0) {
-            TrainedGesturesAdapter adapter = new TrainedGesturesAdapter(getActivity(), items);
+        if (mItems != null && mItems.size() > 0) {
+            TrainedGesturesAdapter adapter = new TrainedGesturesAdapter(getActivity(), mItems);
             mGestureCtrlsList.setAdapter(adapter);
             mGestureCtrlsLL.setVisibility(View.VISIBLE);
         } else {
@@ -117,11 +120,21 @@ public class GestureCtrlFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
+        }
+
+        mItems = null;
+        try {
+            mItems = MainActivity.recognitionService.getGestureList(MIMI_TRAINING_SET);
+            MainActivity.activeGestures = mItems;
+        } catch (RemoteException e) {
+            Log.e(TAG, "Something went wrong when getting gesture list");
+            e.printStackTrace();
         }
     }
 

@@ -3,14 +3,21 @@
     android:layout_height="match_parent"
     tools:context="com.example.yako.mimibot.pages.GestureCtrlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/gesture_ctrls_ll"
-        android:visibility="gone">
+        android:visibility="visible"
+        android:layout_marginTop="16dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Mimi is now listening for your gestures"
+            android:id="@+id/textView"
+            android:layout_marginLeft="16dp"
+            android:textStyle="italic" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -22,13 +29,14 @@
             android:layout_marginTop="16dp" />
 
         <ListView
-            android:layout_width="wrap_content"
+            android:layout_width="200dp"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
             android:layout_marginLeft="24dp"
             android:layout_marginTop="16dp"
             android:id="@+id/gesture_ctrls_list">
         </ListView>
+
     </LinearLayout>
 
     <LinearLayout

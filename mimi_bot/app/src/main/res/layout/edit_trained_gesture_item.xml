@@ -9,7 +9,7 @@
 
 
     <TextView
-        android:layout_width="100dp"
+        android:layout_width="90dp"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:id="@+id/edit_gesture_item_tv" />
@@ -17,7 +17,7 @@
     <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/ic_delete_red_500_36dp"
+        android:background="@drawable/ic_delete_red_500_24dp"
         android:id="@+id/delete_gesture_item_btn" />
 
 </LinearLayout>

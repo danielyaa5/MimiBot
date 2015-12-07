@@ -3,11 +3,19 @@ package com.example.yako.mimibot.pages;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
+import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +26,10 @@ import com.example.yako.mimibot.R;
  * create an instance of this fragment.
  */
 public class CustomGestureFragment extends Fragment {
+    public static final String TAG = "CustomGestureFrag";
+
+    private final static String CUSTOM_TRAINING_SET = "Custom Gestures";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +40,11 @@ public class CustomGestureFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private Button mTeachBtn;
+    private LinearLayout mNoGesturesLL, mNowListeningLL;
+
+    public static List<String> commandHistory;
 
     /**
      * Use this factory method to create a new instance of
@@ -48,7 +65,7 @@ public class CustomGestureFragment extends Fragment {
     }
 
     public CustomGestureFragment() {
-        // Required empty public constructor
+        commandHistory = new ArrayList<String>();
     }
 
     @Override
@@ -58,13 +75,43 @@ public class CustomGestureFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        MainActivity.activeTrainingSet = CUSTOM_TRAINING_SET;
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_custom_gesture, container, false);
+        View view = inflater.inflate(R.layout.fragment_custom_gesture, container, false);
+
+        mTeachBtn = (Button) view.findViewById(R.id.cg_teach_btn);
+        mNoGesturesLL = (LinearLayout) view.findViewById(R.id.cg_no_gestures_ll);
+        mNowListeningLL = (LinearLayout) view.findViewById(R.id.now_listening_ll);
+
+        List<String> gestures = null;
+        try {
+            gestures = MainActivity.recognitionService.getGestureList(CUSTOM_TRAINING_SET);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Something went wrong while trying to retreive the gesture list");
+        }
+
+        if (gestures == null || gestures.size() < 1) {
+            mNoGesturesLL.setVisibility(View.VISIBLE);
+            mTeachBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onFragmentInteraction(2);
+                    }
+                }
+            });
+        } else {
+            mNowListeningLL.setVisibility(View.VISIBLE);
+
+        }
+
+        return view;
     }
 
     @Override
@@ -73,8 +120,8 @@ public class CustomGestureFragment extends Fragment {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 

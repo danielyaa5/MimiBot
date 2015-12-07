@@ -3,12 +3,22 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="horizontal"
-    android:gravity="right">
+    android:gravity="center_vertical"
+    android:paddingBottom="3dp">
+
+    <TextView
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:id="@+id/trained_gesture_item_txt"
+        android:layout_marginTop="4dp" />
 
     <Switch
         android:id="@+id/play_gesture_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
         android:text=""
         android:checked="true"/>
+
 </LinearLayout>

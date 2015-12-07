@@ -3,8 +3,82 @@
     android:layout_height="match_parent"
     tools:context="com.example.yako.mimibot.pages.CustomGestureFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/cg_no_gestures_ll"
+        android:layout_marginLeft="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="You haven&apos;t taught Mimi any custom gestures."
+            android:id="@+id/cg_no_gestures_txt"
+            android:layout_marginTop="16dp"
+            android:autoText="false"
+            android:textStyle="italic" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teach Mimi"
+            android:id="@+id/cg_teach_btn"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="8dp"
+        android:id="@+id/now_listening_ll"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Now listening for custom trained gestures."
+            android:id="@+id/now_listening_text"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:textStyle="italic" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="When a gesture is recognized it will be added to the history below."
+            android:id="@+id/cg_info_text"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Command History"
+            android:id="@+id/command_history_text"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="No gestures have been recognized yet."
+            android:id="@+id/no_commands_recognized_txt"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:textStyle="italic"/>
+
+        <ListView
+            android:id="@+id/command_history_list"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"></ListView>
+    </LinearLayout>
 
 </FrameLayout>

@@ -42,7 +42,8 @@ import de.dfki.ccaal.gestures.IGestureRecognitionListener;
 import de.dfki.ccaal.gestures.IGestureRecognitionService;
 import de.dfki.ccaal.gestures.classifier.Distribution;
 
-public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener, PlayFragment.OnFragmentInteractionListener, GestureCtrlFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener
+        ,PlayFragment.OnFragmentInteractionListener, GestureCtrlFragment.OnFragmentInteractionListener, CustomGestureFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
 
     private CharSequence mDrawerTitle;
@@ -159,7 +160,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
     public void onBackPressed() {
         int back_stack_count = getFragmentManager().getBackStackEntryCount();
         Log.i(TAG, "onBackPressed(), backStackEntryCount = " + String.valueOf(back_stack_count));
-        if (back_stack_count > 1){
+        if (back_stack_count > 1) {
             getFragmentManager().popBackStack();
         } else {
             finish();
@@ -329,6 +330,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
 
             @Override
             public void onGestureRecognized(final Distribution distribution) throws RemoteException {
+
                 if (mCurrFrag == 5) {
                     runOnUiThread(new Runnable() {
                         @Override
@@ -340,7 +342,20 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
                             if (activeGestures.contains(bestMatch)) {
                                 Toast.makeText(MainActivity.this, String.format("Recognized %s gesture", bestMatch), Toast.LENGTH_LONG).show();
                                 Log.i(TAG, "Gesture is in active gesture list.");
+                            } else {
+                                Log.i(TAG, "Gesture is not in active gesture list.");
                             }
+                            Log.i(TAG, "Active gestures list = " + activeGestures.toString());
+                        }
+                    });
+                } else if (mCurrFrag == 7) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            String bestMatch = distribution.getBestMatch();
+                            double bestDistance = distribution.getBestDistance();
+                            Log.i(TAG, "Gesture Recognized: " + bestMatch + ", Best Distance = " + String.valueOf(bestDistance));
+                            Toast.makeText(MainActivity.this, String.format("Recognized %s gesture", bestMatch), Toast.LENGTH_LONG).show();
                         }
                     });
                 }
