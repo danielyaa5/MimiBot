@@ -153,6 +153,17 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         selectItem(pos);
     }
 
+    @Override
+    public void onBackPressed() {
+        int back_stack_count = getFragmentManager().getBackStackEntryCount();
+        Log.i(TAG, "onBackPressed(), backStackEntryCount = " + String.valueOf(back_stack_count));
+        if (back_stack_count > 1){
+            getFragmentManager().popBackStack();
+        } else {
+            finish();
+        }
+    }
+
     /* The click listner for ListView in the navigation drawer */
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
@@ -217,7 +228,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         }
 
         FragmentManager fragmentManager = getFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).addToBackStack(null).commit();
 
         // update selected item and title, then close the drawer
         if (position < 5) {
