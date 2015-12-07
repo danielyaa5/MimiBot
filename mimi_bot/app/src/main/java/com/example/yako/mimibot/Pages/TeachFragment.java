@@ -11,13 +11,14 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.example.yako.mimibot.EditTrainedGesturesAdapter;
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
+import com.example.yako.mimibot.adapters.EditTrainedGesturesAdapter;
 
 import java.util.List;
 
@@ -30,7 +31,7 @@ import java.util.List;
  * Use the {@link TeachFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class TeachFragment extends Fragment {
+public class TeachFragment extends Fragment implements EditTrainedGesturesAdapter.OnEditTrainedGestureListener {
     private final static String TAG = "TeachFragment";
 
     private final static String MIMI_TRAINING_SET = "Mimi Capable Gestures";
@@ -53,6 +54,7 @@ public class TeachFragment extends Fragment {
     private Spinner mTrainingSetSpin, mGestureSpin;
     private ListView mEditGestureList;
     private TextView mNoGesturesTxt;
+    private EditText mEditGestureEdit;
 
     private ArrayAdapter editTrainedGesturesAdapter;
 
@@ -105,6 +107,7 @@ public class TeachFragment extends Fragment {
         mStartTrainButton = (Button) view.findViewById(R.id.trainButton);
         mNoGesturesTxt = (TextView) view.findViewById(R.id.no_gestures_txt);
         mEditGestureList = (ListView) view.findViewById(R.id.trained_gestures_list);
+        mEditGestureEdit = (EditText) view.findViewById(R.id.gesture_edit);
 
         mTrainingSetSpin = (Spinner) view.findViewById(R.id.training_set_spin);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.training_sets_array, android.R.layout.simple_spinner_dropdown_item);
@@ -120,6 +123,13 @@ public class TeachFragment extends Fragment {
                 if (MainActivity.recognitionService != null) {
                     try {
                         MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+                        if (trainingSetName.equals(CUSTOM_TRAINING_SET)) {
+                            mGestureSpin.setVisibility(View.GONE);
+                            mEditGestureEdit.setVisibility(View.VISIBLE);
+                        } else {
+                            mEditGestureEdit.setVisibility(View.GONE);
+                            mGestureSpin.setVisibility(View.VISIBLE);
+                        }
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
@@ -146,6 +156,18 @@ public class TeachFragment extends Fragment {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mGestureSpin.setAdapter(adapter);
         activeGesture = mGestureSpin.getSelectedItem().toString();
+        mGestureSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                activeGesture = parent.getItemAtPosition(position).toString();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
 
         mStartTrainButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -307,15 +329,30 @@ public class TeachFragment extends Fragment {
         }
     }
 
+    /* HELPERS */
     private void populateEditGestureList(View view) {
         Log.i(TAG, "populateEditGestureList()");
 
         try {
             List<String> items = MainActivity.recognitionService.getGestureList(MainActivity.activeTrainingSet);
             if (items.size() > 0) {
-                editTrainedGesturesAdapter = new EditTrainedGesturesAdapter(getActivity(), items);
+                editTrainedGesturesAdapter = new EditTrainedGesturesAdapter(getActivity(), items, this, view);
                 mEditGestureList.setAdapter(editTrainedGesturesAdapter);
                 mEditGestureList.setVisibility(View.VISIBLE);
+                mEditGestureList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        Log.i(TAG, parent.getSelectedItem().toString() + "was pushed");
+
+                        try {
+                            MainActivity.recognitionService.deleteGesture(MainActivity.activeTrainingSet, parent.getSelectedItem().toString());
+                            populateEditGestureList(view);
+                        } catch (RemoteException e) {
+                            Log.e(TAG, "Something went wrong when trying to delete a gesture");
+                            e.printStackTrace();
+                        }
+                    }
+                });
                 Log.i(TAG, "gestureList = " + items.toString());
             } else {
                 mEditGestureList.setVisibility(View.GONE);
@@ -325,6 +362,11 @@ public class TeachFragment extends Fragment {
             Log.e(TAG, "Error getting gesture list");
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void onEditTrainedGestureInteraction(View v) {
+        populateEditGestureList(v);
     }
 
     /**

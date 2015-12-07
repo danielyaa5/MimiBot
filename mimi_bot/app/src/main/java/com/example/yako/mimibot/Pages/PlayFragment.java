@@ -14,7 +14,7 @@ import android.widget.ListView;
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
 import com.example.yako.mimibot.SshManager;
-import com.example.yako.mimibot.TrainedGesturesAdapter;
+import com.example.yako.mimibot.adapters.TrainedGesturesAdapter;
 
 import java.util.List;
 

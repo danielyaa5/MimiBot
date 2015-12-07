@@ -36,7 +36,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/mimi_capable_gesture_ll"
+            android:id="@+id/set_gesture_ll"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginLeft="24dp"
@@ -75,6 +75,17 @@
                 android:spinnerMode="dropdown"
                 android:layout_marginLeft="8dp"
                 android:layout_gravity="top" />
+
+            <EditText
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:hint="Enter A Gesture Name"
+                android:id="@+id/gesture_edit"
+                android:layout_gravity="top"
+                android:layout_marginTop="4dp"
+                android:singleLine="true"
+                android:visibility="gone"/>
         </LinearLayout>
 
         <LinearLayout
@@ -110,6 +121,7 @@
                 android:layout_gravity="center_horizontal"
                 android:layout_marginTop="8dp"
                 android:textColor="@color/android_btn_gray"/>
+
         </LinearLayout>
 
     </LinearLayout>
