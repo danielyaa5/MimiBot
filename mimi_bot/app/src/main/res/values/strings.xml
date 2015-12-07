@@ -20,6 +20,19 @@
         <item>Settings</item>
     </string-array>
 
+    <string-array name="training_sets_array">
+        <item>Mimi Capable Gestures</item>
+        <item>Custom Gestures</item>
+    </string-array>
+
+    <string-array name="mimi_capable_gestures_array">
+        <item>WAVE</item>
+        <item>SALUTE</item>
+        <item>PUNCH</item>
+        <item>COME</item>
+        <item>HI-FIVE</item>
+    </string-array>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ssh_setup">Set up your SSH</string>

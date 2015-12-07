@@ -49,7 +49,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
     private ListView mDrawerList;
 
     /* Gesture Recognition Framework */
-    public static String activeTrainingSet = "default";
+    public static String activeTrainingSet;
     public static IGestureRecognitionService recognitionService;
     private final ServiceConnection serviceConnection = setupGestureConnection();
     private IBinder gestureListenerStub = setupGestureListener();

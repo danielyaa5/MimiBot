@@ -1,26 +1,25 @@
 package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.Fragment;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.SeekBar;
+import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 
+import com.example.yako.mimibot.EditTrainedGesturesAdapter;
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
 
-import de.dfki.android.gestureTrainer.GestureOverview;
+import java.util.List;
 
 
 /**
@@ -34,6 +33,9 @@ import de.dfki.android.gestureTrainer.GestureOverview;
 public class TeachFragment extends Fragment {
     private final static String TAG = "TeachFragment";
 
+    private final static String MIMI_TRAINING_SET = "Mimi Capable Gestures";
+    private final static String CUSTOM_TRAINING_SET = "Custom Gestures";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -43,7 +45,16 @@ public class TeachFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
+    private String activeGesture;
+
     private OnFragmentInteractionListener mListener;
+
+    private Button mStartTrainButton;
+    private Spinner mTrainingSetSpin, mGestureSpin;
+    private ListView mEditGestureList;
+    private TextView mNoGesturesTxt;
+
+    private ArrayAdapter editTrainedGesturesAdapter;
 
     /**
      * Use this factory method to create a new instance of
@@ -74,6 +85,9 @@ public class TeachFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+
+        MainActivity.activeTrainingSet = "mimi_capable_training_set";
+
     }
 
     @Override
@@ -81,135 +95,179 @@ public class TeachFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_teach, container, false);
-        final TextView activeTrainingSetText = (TextView) view.findViewById(R.id.activeTrainingSet);
-        final EditText trainingSetText = (EditText) view.findViewById(R.id.trainingSetName);
-        final EditText gestureNameText = (EditText) view.findViewById(R.id.gestureName);
-        MainActivity.activeTrainingSet = trainingSetText.getText().toString();
-        final Button startTrainButton = (Button) view.findViewById(R.id.trainButton);
-        final Button deleteTrainingSetButton = (Button) view.findViewById(R.id.deleteTrainingSetButton);
-        final Button changeTrainingSetButton = (Button) view.findViewById(R.id.startNewSetButton);
-        final SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar1);
-        seekBar.setVisibility(View.INVISIBLE);
-        seekBar.setMax(20);
-        seekBar.setProgress(20);
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//        final TextView activeTrainingSetText = (TextView) view.findViewById(R.id.activeTrainingSet);
+//        final EditText trainingSetText = (EditText) view.findViewById(R.id.trainingSetName);
+//        final EditText gestureNameText = (EditText) view.findViewById(R.id.gestureName);
+//        final Button deleteTrainingSetButton = (Button) view.findViewById(R.id.deleteTrainingSetButton);
+//        final Button changeTrainingSetButton = (Button) view.findViewById(R.id.startNewSetButton);
+//        final SeekBar seekBar = (SeekBar) view.findViewById(R.id.seekBar1);
 
+        mStartTrainButton = (Button) view.findViewById(R.id.trainButton);
+        mNoGesturesTxt = (TextView) view.findViewById(R.id.no_gestures_txt);
+        mEditGestureList = (ListView) view.findViewById(R.id.trained_gestures_list);
+
+        mTrainingSetSpin = (Spinner) view.findViewById(R.id.training_set_spin);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(), R.array.training_sets_array, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mTrainingSetSpin.setAdapter(adapter);
+        MainActivity.activeTrainingSet = mTrainingSetSpin.getSelectedItem().toString();
+        mTrainingSetSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String trainingSetName = parent.getItemAtPosition(position).toString();
+                MainActivity.activeTrainingSet = trainingSetName;
 
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-
-                try {
-                    MainActivity.recognitionService.setThreshold(progress / 10.0f);
-                } catch (RemoteException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                if (MainActivity.recognitionService != null) {
+                    try {
+                        MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+                    } catch (RemoteException e) {
+                        e.printStackTrace();
+                    }
                 }
+                populateEditGestureList(view);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+        if (MainActivity.recognitionService != null) {
+            try {
+                MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
+        }
+        populateEditGestureList(view);
 
-        startTrainButton.setOnClickListener(new View.OnClickListener() {
+        mGestureSpin = (Spinner) view.findViewById(R.id.gesture_spin);
+        adapter = ArrayAdapter.createFromResource(getActivity(), R.array.mimi_capable_gestures_array, android.R.layout.simple_spinner_dropdown_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mGestureSpin.setAdapter(adapter);
+        activeGesture = mGestureSpin.getSelectedItem().toString();
+
+        mStartTrainButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Log.i(TAG, "Start Training Pushed");
                 if (MainActivity.recognitionService != null) {
                     try {
                         if (!MainActivity.recognitionService.isLearning()) {
                             Log.i(TAG, "Started Training");
-                            startTrainButton.setText("Stop Training");
-                            gestureNameText.setEnabled(false);
-                            deleteTrainingSetButton.setEnabled(false);
-                            changeTrainingSetButton.setEnabled(false);
-                            trainingSetText.setEnabled(false);
-                            MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, gestureNameText.getText().toString());
+                            mStartTrainButton.setText("Stop Training");
+//                            gestureNameText.setEnabled(false);
+//                            deleteTrainingSetButton.setEnabled(false);
+//                            changeTrainingSetButton.setEnabled(false);
+//                            trainingSetText.setEnabled(false);
+                            MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
                         } else {
                             Log.i(TAG, "Stopped Training");
-                            startTrainButton.setText("Start Training");
-                            gestureNameText.setEnabled(true);
-                            deleteTrainingSetButton.setEnabled(true);
-                            changeTrainingSetButton.setEnabled(true);
-                            trainingSetText.setEnabled(true);
+                            mStartTrainButton.setText("Start Training");
+                            populateEditGestureList(v);
+//                            gestureNameText.setEnabled(true);
+//                            deleteTrainingSetButton.setEnabled(true);
+//                            changeTrainingSetButton.setEnabled(true);
+//                            trainingSetText.setEnabled(true);
                             MainActivity.recognitionService.stopLearnMode();
                         }
                     } catch (RemoteException e) {
-                        // TODO Auto-generated catch block
                         e.printStackTrace();
                     }
                 }
             }
         });
 
-        changeTrainingSetButton.setOnClickListener(new View.OnClickListener() {
+//        seekBar.setVisibility(View.INVISIBLE);
+//        seekBar.setMax(20);
+//        seekBar.setProgress(20);
+//        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+//
+//            @Override
+//            public void onStopTrackingTouch(SeekBar seekBar) {
+//                // TODO Auto-generated method stub
+//
+//            }
+//
+//            @Override
+//            public void onStartTrackingTouch(SeekBar seekBar) {
+//                // TODO Auto-generated method stub
+//
+//            }
+//
+//            @Override
+//            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+//
+//                try {
+//                    MainActivity.recognitionService.setThreshold(progress / 10.0f);
+//                } catch (RemoteException e) {
+//                    // TODO Auto-generated catch block
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//        });
 
-            @Override
-            public void onClick(View arg0) {
-                MainActivity.activeTrainingSet = trainingSetText.getText().toString();
-                activeTrainingSetText.setText(MainActivity.activeTrainingSet);
+//        changeTrainingSetButton.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View arg0) {
+//                MainActivity.activeTrainingSet = trainingSetText.getText().toString();
+//                activeTrainingSetText.setText(MainActivity.activeTrainingSet);
+//
+//                if (MainActivity.recognitionService != null) {
+//                    try {
+//                        MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+//                    } catch (RemoteException e) {
+//                        // TODO Auto-generated catch block
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        });
 
-                if (MainActivity.recognitionService != null) {
-                    try {
-                        MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
-                    } catch (RemoteException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-            }
-        });
-
-        deleteTrainingSetButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                builder.setMessage("You really want to delete the training set?").setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (MainActivity.recognitionService != null) {
-                            try {
-                                MainActivity.recognitionService.deleteTrainingSet(MainActivity.activeTrainingSet);
-                            } catch (RemoteException e) {
-                                // TODO Auto-generated catch block
-                                e.printStackTrace();
-                            }
-                        }
-                    }
-                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        dialog.cancel();
-                    }
-                });
-                builder.create().show();
-            }
-        });
+//        deleteTrainingSetButton.setOnClickListener(new View.OnClickListener() {
+//
+//            @Override
+//            public void onClick(View v) {
+//
+//                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+//                builder.setMessage("You really want to delete the training set?").setCancelable(true).setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        if (MainActivity.recognitionService != null) {
+//                            try {
+//                                MainActivity.recognitionService.deleteTrainingSet(MainActivity.activeTrainingSet);
+//                            } catch (RemoteException e) {
+//                                // TODO Auto-generated catch block
+//                                e.printStackTrace();
+//                            }
+//                        }
+//                    }
+//                }).setNegativeButton("No", new DialogInterface.OnClickListener() {
+//                    public void onClick(DialogInterface dialog, int id) {
+//                        dialog.cancel();
+//                    }
+//                });
+//                builder.create().show();
+//            }
+//        });
 
         return view;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.edit_gestures:
-                Intent editGesturesIntent = new Intent().setClass(getActivity(), GestureOverview.class);
-                editGesturesIntent.setPackage("de.dfki.ccaal.gestures");
-                editGesturesIntent.putExtra("trainingSetName", MainActivity.activeTrainingSet);
-                startActivity(editGesturesIntent);
-                return true;
-
-            default:
-                return false;
-        }
-    }
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        switch (item.getItemId()) {
+//            case R.id.edit_gestures:
+//                Intent editGesturesIntent = new Intent().setClass(getActivity(), GestureOverview.class);
+//                editGesturesIntent.setPackage("de.dfki.ccaal.gestures");
+//                editGesturesIntent.putExtra("trainingSetName", MainActivity.activeTrainingSet);
+//                startActivity(editGesturesIntent);
+//                return true;
+//
+//            default:
+//                return false;
+//        }
+//    }
 //    // TODO: Rename method, update argument and hook method into UI event
 //    public void onButtonPressed(Uri uri) {
 //        if (mListener != null) {
@@ -232,7 +290,7 @@ public class TeachFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        
+
         if (MainActivity.recognitionService != null) {
             try {
                 if (MainActivity.recognitionService.isLearning()) {
@@ -246,6 +304,26 @@ public class TeachFragment extends Fragment {
             } catch (RemoteException e) {
                 Log.e(TAG, "Something went wrong when trying to stop learn mode after fragment detach");
             }
+        }
+    }
+
+    private void populateEditGestureList(View view) {
+        Log.i(TAG, "populateEditGestureList()");
+
+        try {
+            List<String> items = MainActivity.recognitionService.getGestureList(MainActivity.activeTrainingSet);
+            if (items.size() > 0) {
+                editTrainedGesturesAdapter = new EditTrainedGesturesAdapter(getActivity(), items);
+                mEditGestureList.setAdapter(editTrainedGesturesAdapter);
+                mEditGestureList.setVisibility(View.VISIBLE);
+                Log.i(TAG, "gestureList = " + items.toString());
+            } else {
+                mEditGestureList.setVisibility(View.GONE);
+                mNoGesturesTxt.setVisibility(View.VISIBLE);
+            }
+        } catch (RemoteException e) {
+            Log.e(TAG, "Error getting gesture list");
+            e.printStackTrace();
         }
     }
 

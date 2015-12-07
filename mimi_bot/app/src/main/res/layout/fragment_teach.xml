@@ -1,50 +1,118 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" tools:context="com.example.yako.mimibot.TeachFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:visibility="visible"
+    tools:context="com.example.yako.mimibot.TeachFragment">
 
-    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent" android:layout_height="fill_parent"
-        android:focusable="true">
-        <ImageView android:layout_width="wrap_content" android:id="@+id/dfkiView"
-            android:src="@drawable/dfki" android:layout_height="wrap_content"
-            android:layout_marginBottom="40px" android:layout_marginTop="5px">
-        </ImageView>
-        <SeekBar android:id="@+id/seekBar1" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_below="@+id/dfkiView" android:layout_alignLeft="@+id/dfkiView" ></SeekBar>
-        <TextView android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:text="Training Set:\t"
-            android:id="@+id/trainingSetLabel" android:layout_below="@+id/seekBar1" />
-        <TextView android:layout_toRightOf="@+id/trainingSetLabel"
-            android:id="@+id/activeTrainingSet" android:layout_below="@+id/seekBar1"
-            android:layout_height="wrap_content" android:text="default"
-            android:layout_width="wrap_content"></TextView>
-        <EditText android:id="@+id/trainingSetName"
-            android:layout_height="wrap_content" android:background="@android:drawable/editbox_background"
-            android:inputType="text" android:text="default" android:layout_below="@id/trainingSetLabel"
-            android:layout_width="fill_parent" android:layout_toRightOf="@+id/startNewSetButton" />
-        <TextView android:layout_height="wrap_content"
-            android:layout_width="wrap_content" android:text="Gesture Name:"
-            android:id="@+id/gestureLabel" android:layout_below="@+id/startNewSetButton"></TextView>
-        <EditText android:id="@+id/gestureName" android:layout_width="fill_parent"
-            android:layout_height="wrap_content" android:background="@android:drawable/editbox_background"
-            android:inputType="text" android:text="gesture0" android:layout_below="@+id/gestureLabel" />
-        <Button android:id="@+id/startNewSetButton"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_alignLeft="@id/gestureName" android:text="Change Training Set"
-            android:layout_below="@+id/trainingSetLabel" />
-        <Button android:id="@+id/trainButton" android:layout_width="wrap_content"
-            android:layout_height="wrap_content" android:layout_below="@+id/gestureName"
-            android:text="Start Training" />
-        <Button android:id="@+id/deleteTrainingSetButton"
-            android:layout_width="wrap_content" android:layout_height="wrap_content"
-            android:layout_below="@id/gestureName" android:layout_toRightOf="@id/trainButton"
-            android:text="Delete Training Set" />
-        <TextView android:id="@+id/credit" android:layout_height="fill_parent"
-            android:layout_width="fill_parent" android:layout_below="@+id/trainButton"
-            android:text="Copyright © 2010 - Robert Neßelrath\nAll Rights Reserved"
-            android:gravity="bottom|center_horizontal">
-        </TextView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal"
+            android:id="@+id/training_set_ll">
+
+            <TextView
+                android:id="@+id/training_set_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:text="Training Set:"
+                android:textAppearance="?android:attr/textAppearanceLarge" />
+
+            <Spinner
+                android:id="@+id/training_set_spin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/mimi_capable_gesture_ll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="24dp"
+            android:layout_marginRight="16dp"
+            android:gravity="center_vertical|left"
+            android:orientation="horizontal"
+            android:layout_marginTop="8dp">
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical|left">
+
+                <TextView
+                    android:id="@+id/gesture_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Select Gesture:"
+                    android:textAppearance="?android:attr/textAppearanceMedium" />
+
+                <Button
+                    android:id="@+id/trainButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Start Training"
+                    android:textSize="14sp"
+                    android:layout_marginTop="8dp" />
+            </LinearLayout>
+
+            <Spinner
+                android:id="@+id/gesture_spin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown"
+                android:layout_marginLeft="8dp"
+                android:layout_gravity="top" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/edit_gestures_ll"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="24dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Trained Gestures"
+                android:id="@+id/trained_gestures_tv"
+                android:layout_gravity="center_horizontal" />
+
+            <ListView
+                android:id="@+id/trained_gestures_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="24dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginRight="24dp"></ListView>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="You don't have any trained gestures yet."
+                android:id="@+id/no_gestures_txt"
+                android:visibility="gone"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/android_btn_gray"/>
+        </LinearLayout>
+
+    </LinearLayout>
 
 
 </FrameLayout>
