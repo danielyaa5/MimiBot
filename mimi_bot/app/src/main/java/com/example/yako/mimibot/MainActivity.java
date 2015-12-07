@@ -24,6 +24,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.example.yako.mimibot.adapters.DrawerItemAdapter;
 import com.example.yako.mimibot.pages.HomeFragment;
 import com.example.yako.mimibot.pages.PlayFragment;
 import com.example.yako.mimibot.pages.SettingsFragment;
