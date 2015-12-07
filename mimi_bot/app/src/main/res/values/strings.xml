@@ -28,9 +28,8 @@
     <string-array name="mimi_capable_gestures_array">
         <item>WAVE</item>
         <item>SALUTE</item>
-        <item>PUNCH</item>
-        <item>COME</item>
-        <item>HI-FIVE</item>
+        <item>HAND-SHAKE</item>
+        <item>SPIN-FOREARM</item>
     </string-array>
 
 <!-- TODO: Remove or change this placeholder text -->
