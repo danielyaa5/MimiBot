@@ -338,6 +338,7 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
             if (items.size() > 0) {
                 editTrainedGesturesAdapter = new EditTrainedGesturesAdapter(getActivity(), items, this, view);
                 mEditGestureList.setAdapter(editTrainedGesturesAdapter);
+                mNoGesturesTxt.setVisibility(View.GONE);
                 mEditGestureList.setVisibility(View.VISIBLE);
                 mEditGestureList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                     @Override
