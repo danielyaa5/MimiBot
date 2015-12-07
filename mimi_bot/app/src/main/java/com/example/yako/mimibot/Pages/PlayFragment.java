@@ -8,12 +8,9 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.ListView;
 
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
-import com.example.yako.mimibot.SshManager;
 import com.example.yako.mimibot.adapters.TrainedGesturesAdapter;
 
 import java.util.List;
@@ -40,8 +37,6 @@ public class PlayFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    private Button mMotion1, mMotion2, mMotion3, mMotion4;
-    private ListView trainedGesturesLV;
     private TrainedGesturesAdapter trainedGesturesAdapter;
 
     private OnFragmentInteractionListener mListener;
@@ -88,47 +83,45 @@ public class PlayFragment extends Fragment {
             trainingSet = MainActivity.activeTrainingSet;
             Log.i(TAG, "trainingSet = " + trainingSet);
             List<String> items = MainActivity.recognitionService.getGestureList(trainingSet);
-            trainedGesturesLV = (ListView) view.findViewById(R.id.trained_gesture_list_container_lv);
             trainedGesturesAdapter = new TrainedGesturesAdapter(getActivity(), items);
-            trainedGesturesLV.setAdapter(trainedGesturesAdapter);
             Log.i(TAG, "gestureList = " + items.toString());
         } catch (RemoteException e) {
             Log.e(TAG, "Error getting gesture list");
             e.printStackTrace();
         }
 
-        mMotion1 = (Button) view.findViewById(R.id.motion_1_btn);
-        mMotion2 = (Button) view.findViewById(R.id.motion_2_btn);
-        mMotion3 = (Button) view.findViewById(R.id.motion_3_btn);
-        mMotion4 = (Button) view.findViewById(R.id.motion_4_btn);
-
-        mMotion1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SshManager.sendCommand("7");
-                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm1");
-            }
-        });
-        mMotion2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SshManager.sendCommand("7");
-                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
-            }
-        });
-        mMotion3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SshManager.sendCommand("7");
-                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
-            }
-        });
-        mMotion4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm4");
-            }
-        });
+//        mMotion1 = (Button) view.findViewById(R.id.motion_1_btn);
+//        mMotion2 = (Button) view.findViewById(R.id.motion_2_btn);
+//        mMotion3 = (Button) view.findViewById(R.id.motion_3_btn);
+//        mMotion4 = (Button) view.findViewById(R.id.motion_4_btn);
+//
+//        mMotion1.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SshManager.sendCommand("7");
+//                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm1");
+//            }
+//        });
+//        mMotion2.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SshManager.sendCommand("7");
+//                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
+//            }
+//        });
+//        mMotion3.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SshManager.sendCommand("7");
+//                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+//            }
+//        });
+//        mMotion4.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm4");
+//            }
+//        });
 
 
         return view;

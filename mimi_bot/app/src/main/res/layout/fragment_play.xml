@@ -2,41 +2,46 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" tools:context="com.example.yako.mimibot.PlayFragment">
 
-    <!-- TODO: Update blank fragment layout -->
 
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="center_vertical|center_horizontal">
+        android:weightSum="3">
 
-        <ListView
-            android:id="@+id/trained_gesture_list_container_lv"
+        <Button
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
+            android:layout_height="0dp"
+            android:text="GESTURE Control Mimi"
+            android:id="@+id/gesture_ctrl_btn"
+            android:layout_weight="1"
+            android:background="@drawable/play_btn"
+            android:drawableTop="@drawable/ic_accessibility_black_48dp"
+            android:paddingTop="16dp"
+            android:layout_marginBottom="3dp" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Motion 1"
-            android:id="@+id/motion_1_btn" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="REMOTE Control Mimi"
+            android:layout_weight="1"
+            android:background="@drawable/play_btn"
+            android:drawableTop="@drawable/ic_videogame_asset_black_48dp"
+            android:id="@+id/remote_ctrl_btn"
+            android:paddingTop="16dp"
+            android:layout_marginBottom="3dp"
+            android:layout_marginTop="3dp" />
 
         <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Motion 2"
-            android:id="@+id/motion_2_btn" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Motion 3"
-            android:id="@+id/motion_3_btn" />
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Motion 4"
-            android:id="@+id/motion_4_btn" />
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:text="TEST Custom Recognition"
+            android:layout_weight="1"
+            android:background="@drawable/play_btn"
+            android:drawableTop="@drawable/ic_motorcycle_black_48dp"
+            android:id="@+id/test_gesture_btn"
+            android:paddingTop="16dp"
+            android:layout_marginTop="3dp" />
     </LinearLayout>
+
 </FrameLayout>
