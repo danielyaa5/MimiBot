@@ -2,12 +2,14 @@ package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -155,19 +157,6 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
         adapter = ArrayAdapter.createFromResource(getActivity(), R.array.mimi_capable_gestures_array, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mGestureSpin.setAdapter(adapter);
-        activeGesture = mGestureSpin.getSelectedItem().toString();
-        mGestureSpin.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                activeGesture = parent.getItemAtPosition(position).toString();
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
 
         mStartTrainButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -181,7 +170,18 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
 //                            deleteTrainingSetButton.setEnabled(false);
 //                            changeTrainingSetButton.setEnabled(false);
 //                            trainingSetText.setEnabled(false);
+                            if (mTrainingSetSpin.getSelectedItem().toString().equals(CUSTOM_TRAINING_SET)) {
+                                activeGesture = mEditGestureEdit.getText().toString();
+                                View view = getActivity().getCurrentFocus();
+                                if (view != null) {
+                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                }
+                            } else {
+                                activeGesture = mGestureSpin.getSelectedItem().toString();
+                            }
                             MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
+
                         } else {
                             Log.i(TAG, "Stopped Training");
                             mStartTrainButton.setText("Start Training");
