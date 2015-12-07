@@ -171,17 +171,21 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
 //                            changeTrainingSetButton.setEnabled(false);
 //                            trainingSetText.setEnabled(false);
                             if (mTrainingSetSpin.getSelectedItem().toString().equals(CUSTOM_TRAINING_SET)) {
-                                activeGesture = mEditGestureEdit.getText().toString();
-                                View view = getActivity().getCurrentFocus();
-                                if (view != null) {
-                                    InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-                                    imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                if (mEditGestureEdit.getText().toString().trim().length() < 1) {
+                                    activeGesture = mEditGestureEdit.getText().toString();
+                                    View view = getActivity().getCurrentFocus();
+                                    if (view != null) {
+                                        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+                                        imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+                                    }
+                                    MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
+                                } else {
+                                    mEditGestureEdit.setError("This field cannot be empty");
                                 }
                             } else {
                                 activeGesture = mGestureSpin.getSelectedItem().toString();
+                                MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
                             }
-                            MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
-
                         } else {
                             Log.i(TAG, "Stopped Training");
                             mStartTrainButton.setText("Start Training");
