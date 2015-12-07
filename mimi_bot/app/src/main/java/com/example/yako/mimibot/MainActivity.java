@@ -35,6 +35,7 @@ import com.example.yako.mimibot.pages.TeachFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import de.dfki.ccaal.gestures.GestureRecognitionService;
 import de.dfki.ccaal.gestures.IGestureRecognitionListener;
@@ -55,6 +56,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
     /* Gesture Recognition Framework */
     public static String activeTrainingSet;
     public static IGestureRecognitionService recognitionService;
+    public static List<String> activeGestures = new ArrayList<String>();
     private final ServiceConnection serviceConnection = setupGestureConnection();
     private IBinder gestureListenerStub = setupGestureListener();
 
@@ -327,12 +329,18 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
 
             @Override
             public void onGestureRecognized(final Distribution distribution) throws RemoteException {
-                if (mCurrFrag == 1) {
+                if (mCurrFrag == 5) {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            Toast.makeText(MainActivity.this, String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()), Toast.LENGTH_LONG).show();
-                            System.err.println(String.format("%s: %f", distribution.getBestMatch(), distribution.getBestDistance()));
+                            String bestMatch = distribution.getBestMatch();
+                            double bestDistance = distribution.getBestDistance();
+                            Log.i(TAG, "Gesture Recognized: " + bestMatch + ", Best Distance = " + String.valueOf(bestDistance));
+
+                            if (activeGestures.contains(bestMatch)) {
+                                Toast.makeText(MainActivity.this, String.format("Recognized %s gesture", bestMatch), Toast.LENGTH_LONG).show();
+                                Log.i(TAG, "Gesture is in active gesture list.");
+                            }
                         }
                     });
                 }

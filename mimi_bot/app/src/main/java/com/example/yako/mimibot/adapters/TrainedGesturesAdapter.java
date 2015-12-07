@@ -5,10 +5,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.Switch;
 
+import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -22,6 +25,7 @@ public class TrainedGesturesAdapter extends ArrayAdapter<String> {
         super(context, -1, values);
         this.context = context;
         this.values = values;
+        MainActivity.activeGestures = new ArrayList<String>();
     }
 
     @Override
@@ -32,8 +36,18 @@ public class TrainedGesturesAdapter extends ArrayAdapter<String> {
 
         Switch playGestureSwitch = (Switch) rowView.findViewById(R.id.play_gesture_switch);
 
-        String s = values.get(position);
+        final String s = values.get(position);
         playGestureSwitch.setText(s);
+        playGestureSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    MainActivity.activeGestures.add(s);
+                } else {
+                    MainActivity.activeGestures.remove(s);
+                }
+            }
+        });
 
         return rowView;
     }

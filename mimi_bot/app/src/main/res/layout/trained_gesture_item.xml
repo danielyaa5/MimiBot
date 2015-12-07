@@ -9,5 +9,6 @@
         android:id="@+id/play_gesture_switch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="" />
+        android:text=""
+        android:checked="true"/>
 </LinearLayout>
