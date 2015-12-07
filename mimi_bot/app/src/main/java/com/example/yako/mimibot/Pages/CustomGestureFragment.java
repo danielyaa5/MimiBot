@@ -8,8 +8,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
@@ -43,8 +45,11 @@ public class CustomGestureFragment extends Fragment {
 
     private Button mTeachBtn;
     private LinearLayout mNoGesturesLL, mNowListeningLL;
+    private ListView mCommandHistoryList;
 
-    public static List<String> commandHistory;
+    private static ArrayAdapter<String> mCommandHistoryAdapter = null;
+
+    private static List<String> commandHistory;
 
     /**
      * Use this factory method to create a new instance of
@@ -65,7 +70,6 @@ public class CustomGestureFragment extends Fragment {
     }
 
     public CustomGestureFragment() {
-        commandHistory = new ArrayList<String>();
     }
 
     @Override
@@ -77,6 +81,12 @@ public class CustomGestureFragment extends Fragment {
         }
 
         MainActivity.activeTrainingSet = CUSTOM_TRAINING_SET;
+        try {
+            MainActivity.recognitionService.startClassificationMode(MainActivity.activeTrainingSet);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Something went wrong while trying to startClassificationMode");
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -88,6 +98,7 @@ public class CustomGestureFragment extends Fragment {
         mTeachBtn = (Button) view.findViewById(R.id.cg_teach_btn);
         mNoGesturesLL = (LinearLayout) view.findViewById(R.id.cg_no_gestures_ll);
         mNowListeningLL = (LinearLayout) view.findViewById(R.id.now_listening_ll);
+        mCommandHistoryList = (ListView) view.findViewById(R.id.command_history_list);
 
         List<String> gestures = null;
         try {
@@ -108,8 +119,10 @@ public class CustomGestureFragment extends Fragment {
             });
         } else {
             mNowListeningLL.setVisibility(View.VISIBLE);
-
         }
+
+        mCommandHistoryAdapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, commandHistory);
+        mCommandHistoryList.setAdapter(mCommandHistoryAdapter);
 
         return view;
     }
@@ -117,18 +130,26 @@ public class CustomGestureFragment extends Fragment {
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
+
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
             throw new ClassCastException(activity.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+
+        commandHistory = new ArrayList<String>();
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+    }
+
+    public static void addCommand(String command) {
+        commandHistory.add(command);
+        mCommandHistoryAdapter.notifyDataSetChanged();
     }
 
     /**

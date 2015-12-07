@@ -356,6 +356,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
                             double bestDistance = distribution.getBestDistance();
                             Log.i(TAG, "Gesture Recognized: " + bestMatch + ", Best Distance = " + String.valueOf(bestDistance));
                             Toast.makeText(MainActivity.this, String.format("Recognized %s gesture", bestMatch), Toast.LENGTH_LONG).show();
+                            CustomGestureFragment.addCommand(bestMatch);
                         }
                     });
                 }
