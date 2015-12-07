@@ -74,6 +74,7 @@
             android:layout_height="match_parent"
             android:orientation="vertical"
             android:visibility="gone"
+            android:layout_marginTop="16dp"
             android:layout_centerHorizontal="true">
 
             <LinearLayout

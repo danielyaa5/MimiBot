@@ -25,9 +25,11 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.yako.mimibot.adapters.DrawerItemAdapter;
-import com.example.yako.mimibot.pages.GestureControlFragment;
+import com.example.yako.mimibot.pages.CustomGestureFragment;
+import com.example.yako.mimibot.pages.GestureCtrlFragment;
 import com.example.yako.mimibot.pages.HomeFragment;
 import com.example.yako.mimibot.pages.PlayFragment;
+import com.example.yako.mimibot.pages.RemoteCtrlFragment;
 import com.example.yako.mimibot.pages.SettingsFragment;
 import com.example.yako.mimibot.pages.TeachFragment;
 
@@ -191,8 +193,16 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         } else {
             switch (position) {
                 case 5:
-                    Log.i(TAG, "Opening GestureControlFragment Frag");
-                    fragmentClass = GestureControlFragment.class;
+                    Log.i(TAG, "Opening GestureCtrlFragment");
+                    fragmentClass = GestureCtrlFragment.class;
+                    break;
+                case 6:
+                    Log.i(TAG, "Opening RemoteCtrlFragment");
+                    fragmentClass = RemoteCtrlFragment.class;
+                    break;
+                case 7:
+                    Log.i(TAG, "Opening CustomGestureFragment");
+                    fragmentClass = CustomGestureFragment.class;
                     break;
                 default:
                     Log.e(TAG, "Didn't recognize requested fragment");
@@ -252,7 +262,6 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
             try {
                 recognitionService.unregisterListener(IGestureRecognitionListener.Stub.asInterface(gestureListenerStub));
             } catch (RemoteException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

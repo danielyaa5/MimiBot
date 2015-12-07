@@ -1,9 +1,8 @@
 package com.example.yako.mimibot.pages;
 
 import android.app.Activity;
-import android.net.Uri;
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,12 +12,12 @@ import com.example.yako.mimibot.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GestureControlFragment.OnFragmentInteractionListener} interface
+ * {@link GestureCtrlFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GestureControlFragment#newInstance} factory method to
+ * Use the {@link GestureCtrlFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GestureControlFragment extends Fragment {
+public class GestureCtrlFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -36,11 +35,11 @@ public class GestureControlFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment GestureControlFragment.
+     * @return A new instance of fragment GestureCtrlFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GestureControlFragment newInstance(String param1, String param2) {
-        GestureControlFragment fragment = new GestureControlFragment();
+    public static GestureCtrlFragment newInstance(String param1, String param2) {
+        GestureCtrlFragment fragment = new GestureCtrlFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -48,7 +47,7 @@ public class GestureControlFragment extends Fragment {
         return fragment;
     }
 
-    public GestureControlFragment() {
+    public GestureCtrlFragment() {
         // Required empty public constructor
     }
 
@@ -66,13 +65,6 @@ public class GestureControlFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_gesture_control, container, false);
-    }
-
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(Uri uri) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
-        }
     }
 
     @Override
@@ -104,7 +96,7 @@ public class GestureControlFragment extends Fragment {
      */
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
-        public void onFragmentInteraction(Uri uri);
+        public void onFragmentInteraction(int pos);
     }
 
 }

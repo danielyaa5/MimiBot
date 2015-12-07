@@ -161,21 +161,14 @@ public class PlayFragment extends Fragment {
         return view;
     }
 
-    // TODO: Rename method, update argument and hook method into UI event
-    public void onButtonPressed(int pos) {
-        if (mListener != null) {
-            mListener.onFragmentInteraction(pos);
-        }
-    }
-
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
