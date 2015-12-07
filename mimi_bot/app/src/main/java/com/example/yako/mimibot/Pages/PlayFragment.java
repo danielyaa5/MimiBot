@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
@@ -40,6 +41,8 @@ public class PlayFragment extends Fragment {
     private TrainedGesturesAdapter trainedGesturesAdapter;
 
     private OnFragmentInteractionListener mListener;
+
+    private Button mGestureCtrlBtn, mRemoteCtrlBtn, mTestCustomBtn;
 
     /**
      * Use this factory method to create a new instance of
@@ -89,6 +92,37 @@ public class PlayFragment extends Fragment {
             Log.e(TAG, "Error getting gesture list");
             e.printStackTrace();
         }
+
+        mGestureCtrlBtn = (Button) view.findViewById(R.id.gesture_ctrl_btn);
+        mRemoteCtrlBtn = (Button) view.findViewById(R.id.remote_ctrl_btn);
+        mTestCustomBtn = (Button) view.findViewById(R.id.test_gesture_btn);
+
+        mGestureCtrlBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(5);
+                }
+            }
+        });
+
+        mRemoteCtrlBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(6);
+                }
+            }
+        });
+
+        mTestCustomBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener != null) {
+                    mListener.onFragmentInteraction(7);
+                }
+            }
+        });
 
 //        mMotion1 = (Button) view.findViewById(R.id.motion_1_btn);
 //        mMotion2 = (Button) view.findViewById(R.id.motion_2_btn);

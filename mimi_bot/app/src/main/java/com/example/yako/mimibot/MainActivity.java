@@ -25,6 +25,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.example.yako.mimibot.adapters.DrawerItemAdapter;
+import com.example.yako.mimibot.pages.GestureControlFragment;
 import com.example.yako.mimibot.pages.HomeFragment;
 import com.example.yako.mimibot.pages.PlayFragment;
 import com.example.yako.mimibot.pages.SettingsFragment;
@@ -38,7 +39,7 @@ import de.dfki.ccaal.gestures.IGestureRecognitionListener;
 import de.dfki.ccaal.gestures.IGestureRecognitionService;
 import de.dfki.ccaal.gestures.classifier.Distribution;
 
-public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener {
+public class MainActivity extends Activity implements HomeFragment.OnFragmentInteractionListener, SettingsFragment.OnFragmentInteractionListener, TeachFragment.OnFragmentInteractionListener, PlayFragment.OnFragmentInteractionListener {
     private final String TAG = "MainActivity";
 
     private CharSequence mDrawerTitle;
@@ -127,7 +128,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
             return true;
         }
         // Handle action buttons
-        switch(item.getItemId()) {
+        switch (item.getItemId()) {
             case R.id.action_websearch:
                 // create intent to perform web search for this planet
                 Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
@@ -164,26 +165,39 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         Fragment fragment = null;
 
         Class fragmentClass;
-        String action = mActionTitles[position];
-        switch(action) {
-            case "Home":
-                Log.i(TAG, "Navbar --> Home pressed");
-                fragmentClass = HomeFragment.class;
-                break;
-            case "Settings":
-                Log.i(TAG, "Navbar --> Settings pressed");
-                fragmentClass = SettingsFragment.class;
-                break;
-            case "Teach":
-                Log.i(TAG, "Navbar --> Teach pressed");
-                fragmentClass = TeachFragment.class;
-                break;
-            case "Play":
-                Log.i(TAG, "Navbar --> Play pressed");
-                fragmentClass = PlayFragment.class;
-                break;
-            default:
-                fragmentClass = HomeFragment.class;
+
+        if (position < 5) {
+            String action = mActionTitles[position];
+            switch (action) {
+                case "Home":
+                    Log.i(TAG, "Navbar --> Home pressed");
+                    fragmentClass = HomeFragment.class;
+                    break;
+                case "Settings":
+                    Log.i(TAG, "Navbar --> Settings pressed");
+                    fragmentClass = SettingsFragment.class;
+                    break;
+                case "Teach":
+                    Log.i(TAG, "Navbar --> Teach pressed");
+                    fragmentClass = TeachFragment.class;
+                    break;
+                case "Play":
+                    Log.i(TAG, "Navbar --> Play pressed");
+                    fragmentClass = PlayFragment.class;
+                    break;
+                default:
+                    fragmentClass = HomeFragment.class;
+            }
+        } else {
+            switch (position) {
+                case 5:
+                    Log.i(TAG, "Opening GestureControlFragment Frag");
+                    fragmentClass = GestureControlFragment.class;
+                    break;
+                default:
+                    Log.e(TAG, "Didn't recognize requested fragment");
+                    fragmentClass = HomeFragment.class;
+            }
         }
 
         try {
@@ -196,9 +210,14 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
         fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
 
         // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, true);
-        setTitle(action);
-        mDrawerLayout.closeDrawer(mDrawerList);
+        if (position < 5) {
+            String action = mActionTitles[position];
+
+            mDrawerList.setItemChecked(position, true);
+            setTitle(action);
+            mDrawerLayout.closeDrawer(mDrawerList);
+        }
+
     }
 
     @Override

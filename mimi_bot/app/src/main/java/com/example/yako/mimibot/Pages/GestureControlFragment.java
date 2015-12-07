@@ -13,12 +13,12 @@ import com.example.yako.mimibot.R;
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link GestureControl.OnFragmentInteractionListener} interface
+ * {@link GestureControlFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link GestureControl#newInstance} factory method to
+ * Use the {@link GestureControlFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class GestureControl extends Fragment {
+public class GestureControlFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -36,11 +36,11 @@ public class GestureControl extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment GestureControl.
+     * @return A new instance of fragment GestureControlFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static GestureControl newInstance(String param1, String param2) {
-        GestureControl fragment = new GestureControl();
+    public static GestureControlFragment newInstance(String param1, String param2) {
+        GestureControlFragment fragment = new GestureControlFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -48,7 +48,7 @@ public class GestureControl extends Fragment {
         return fragment;
     }
 
-    public GestureControl() {
+    public GestureControlFragment() {
         // Required empty public constructor
     }
 
@@ -81,8 +81,8 @@ public class GestureControl extends Fragment {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-            throw new ClassCastException(activity.toString()
-                    + " must implement OnFragmentInteractionListener");
+//            throw new ClassCastException(activity.toString()
+//                    + " must implement OnFragmentInteractionListener");
         }
     }
 
