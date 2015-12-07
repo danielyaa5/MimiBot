@@ -148,7 +148,7 @@ public class CustomGestureFragment extends Fragment {
     }
 
     public static void addCommand(String command) {
-        commandHistory.add(command);
+        commandHistory.add(0, command);
         mCommandHistoryAdapter.notifyDataSetChanged();
     }
 
