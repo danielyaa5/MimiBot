@@ -4,7 +4,57 @@
     tools:context="com.example.yako.mimibot.pages.GestureCtrlFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/gesture_ctrls_ll"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Available Gestures"
+            android:id="@+id/available_gestures_txt"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="16dp" />
+
+        <ListView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_marginLeft="24dp"
+            android:layout_marginTop="16dp"
+            android:id="@+id/gesture_ctrls_list">
+        </ListView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/no_gestures_ll"
+        android:layout_marginLeft="16dp"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="You haven&apos;t taught Mimi any gestures."
+            android:id="@+id/no_gestures_txt"
+            android:layout_marginTop="16dp"
+            android:autoText="false"
+            android:textStyle="italic" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Teach Mimi"
+            android:id="@+id/gc_teach_btn"
+            android:layout_marginTop="8dp" />
+    </LinearLayout>
 
 </FrameLayout>

@@ -3,11 +3,20 @@ package com.example.yako.mimibot.pages;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.os.RemoteException;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 
+import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
+import com.example.yako.mimibot.adapters.TrainedGesturesAdapter;
+
+import java.util.List;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -18,6 +27,9 @@ import com.example.yako.mimibot.R;
  * create an instance of this fragment.
  */
 public class GestureCtrlFragment extends Fragment {
+    private static final String MIMI_TRAINING_SET = "Mimi Capable Gestures";
+    private static final String TAG = "GestureCtrlFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +40,10 @@ public class GestureCtrlFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private LinearLayout mNoGesturesLL, mGestureCtrlsLL;
+    private ListView mGestureCtrlsList;
+    private Button mTeachBtn;
 
     /**
      * Use this factory method to create a new instance of
@@ -64,7 +80,38 @@ public class GestureCtrlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_gesture_control, container, false);
+        View view = inflater.inflate(R.layout.fragment_gesture_control, container, false);
+
+        mGestureCtrlsLL = (LinearLayout) view.findViewById(R.id.gesture_ctrls_ll);
+        mNoGesturesLL = (LinearLayout) view.findViewById(R.id.no_gestures_ll);
+        mGestureCtrlsList = (ListView) view.findViewById(R.id.gesture_ctrls_list);
+        mTeachBtn = (Button) view.findViewById(R.id.gc_teach_btn);
+
+        List<String> items = null;
+        try {
+            items = MainActivity.recognitionService.getGestureList(MIMI_TRAINING_SET);
+        } catch (RemoteException e) {
+            Log.e(TAG, "Something went wrong when getting gesture list");
+            e.printStackTrace();
+        }
+
+        if (items != null && items.size() > 0) {
+            TrainedGesturesAdapter adapter = new TrainedGesturesAdapter(getActivity(), items);
+            mGestureCtrlsList.setAdapter(adapter);
+            mGestureCtrlsLL.setVisibility(View.VISIBLE);
+        } else {
+            mNoGesturesLL.setVisibility(View.VISIBLE);
+            mTeachBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (mListener != null) {
+                        mListener.onFragmentInteraction(2);
+                    }
+                }
+            });
+        }
+
+        return view;
     }
 
     @Override
@@ -73,8 +120,8 @@ public class GestureCtrlFragment extends Fragment {
         try {
             mListener = (OnFragmentInteractionListener) activity;
         } catch (ClassCastException e) {
-//            throw new ClassCastException(activity.toString()
-//                    + " must implement OnFragmentInteractionListener");
+            throw new ClassCastException(activity.toString()
+                    + " must implement OnFragmentInteractionListener");
         }
     }
 
