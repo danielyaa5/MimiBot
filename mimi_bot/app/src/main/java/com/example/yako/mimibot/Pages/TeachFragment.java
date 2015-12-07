@@ -170,6 +170,7 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
 //                            deleteTrainingSetButton.setEnabled(false);
 //                            changeTrainingSetButton.setEnabled(false);
 //                            trainingSetText.setEnabled(false);
+                            activeGesture = null;
                             if (mTrainingSetSpin.getSelectedItem().toString().equals(CUSTOM_TRAINING_SET)) {
                                 if (mEditGestureEdit.getText().toString().trim().length() < 1) {
                                     activeGesture = mEditGestureEdit.getText().toString();
@@ -178,13 +179,18 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
                                         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
                                         imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                                     }
-                                    MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
+                                    mEditGestureEdit.setEnabled(false);
                                 } else {
                                     mEditGestureEdit.setError("This field cannot be empty");
                                 }
                             } else {
                                 activeGesture = mGestureSpin.getSelectedItem().toString();
+                                mGestureSpin.setEnabled(false);
+                            }
+
+                            if (activeGesture != null) {
                                 MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
+                                mTrainingSetSpin.setEnabled(false);
                             }
                         } else {
                             Log.i(TAG, "Stopped Training");
@@ -194,6 +200,12 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
 //                            deleteTrainingSetButton.setEnabled(true);
 //                            changeTrainingSetButton.setEnabled(true);
 //                            trainingSetText.setEnabled(true);
+                            if (mTrainingSetSpin.getSelectedItem().toString().equals(CUSTOM_TRAINING_SET)) {
+                                mEditGestureEdit.setEnabled(true);
+                            } else {
+                                mGestureSpin.setEnabled(true);
+                            }
+                            mTrainingSetSpin.setEnabled(true);
                             MainActivity.recognitionService.stopLearnMode();
                         }
                     } catch (RemoteException e) {
