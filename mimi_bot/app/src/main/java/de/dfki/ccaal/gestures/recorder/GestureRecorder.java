@@ -21,15 +21,18 @@
  */
 package de.dfki.ccaal.gestures.recorder;
 
-import java.util.ArrayList;
-
 import android.content.Context;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
+
+import java.util.ArrayList;
 
 public class GestureRecorder implements SensorEventListener {
+
+	private static final String TAG = "GestureRecorder";
 
 	public enum RecordMode {
 		MOTION_DETECTION, PUSH_TO_GESTURE
@@ -69,7 +72,7 @@ public class GestureRecorder implements SensorEventListener {
 
 	public void setThreshold(float threshold) {
 		THRESHOLD = threshold;
-		System.err.println("New Threshold " + threshold);
+		Log.i(TAG, "New Threshold " + threshold);
 	}
 
 	public boolean isRunning() {
@@ -118,7 +121,7 @@ public class GestureRecorder implements SensorEventListener {
 			}
 			if (stepsSinceNoMovement == 10) {
 
-				System.out.println("Length is: " + String.valueOf(gestureValues.size() - 10));
+				Log.i(TAG, "Length is: " + String.valueOf(gestureValues.size() - 10));
 				if (gestureValues.size() - 10 > MIN_GESTURE_SIZE) {
 					listener.onGestureRecorded(gestureValues.subList(0, gestureValues.size() - 10));
 				}

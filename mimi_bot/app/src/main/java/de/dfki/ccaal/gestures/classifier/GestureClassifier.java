@@ -115,7 +115,7 @@ public class GestureClassifier {
 	}
 
 	public boolean deleteTrainingSet(String trainingSetName) {
-		System.out.printf("Try to delete training set %s\n", trainingSetName);
+		Log.i(TAG, String.format("Try to delete training set %s\n", trainingSetName));
 		if (activeTrainingSet != null && activeTrainingSet.equals(trainingSetName)) {
 			trainingSet = new ArrayList<Gesture>();
 		}
@@ -165,7 +165,7 @@ public class GestureClassifier {
 
 	public Distribution classifySignal(String trainingSetName, Gesture signal) {
 		if (trainingSetName == null) {
-			System.err.println("No Training Set Name specified");
+			Log.e(TAG, "No Training Set Name specified");
 			trainingSetName = "default";
 		}
 		if (!trainingSetName.equals(activeTrainingSet)) {
@@ -180,7 +180,7 @@ public class GestureClassifier {
 			distribution.addEntry(s.getLabel(), dist);
 		}
 		if (trainingSet.isEmpty()) {
-			System.err.printf("No training data for trainingSet %s available.\n", trainingSetName);
+			Log.e(TAG, String.format("No training data for trainingSet %s available.\n", trainingSetName));
 		}
 
 		return distribution;

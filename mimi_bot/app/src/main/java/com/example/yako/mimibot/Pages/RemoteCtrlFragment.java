@@ -54,7 +54,6 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
     private LinearLayout mRemoteGestureBtnsLL, mInnerTerminalLL, mTerminalLL;
     private ScrollView mTerminalScroll;
 
-
     private SharedPreferences settings;
 
     /**
@@ -87,6 +86,7 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
         }
 
         settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
+        SshManager.setOnStdReceivedListener(this);
     }
 
     @Override
@@ -168,6 +168,13 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        SshManager.removeStdReceivedListener();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        SshManager.removeStdReceivedListener();
     }
 
     public void promptCommand() {
@@ -231,13 +238,20 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
     }
 
     @Override
-    public void onStdInReceived(String stdIn) {
-        TextView tv = new TextView(getActivity());
-        tv.setText(stdIn);
-        tv.setTextColor(getResources().getColor(R.color.terminal_green));
-        tv.setTextSize(14);
-        tv.setTypeface(Typeface.DEFAULT_BOLD);
-        mInnerTerminalLL.addView(tv, mInnerTerminalLL.getChildCount()-2);
+    public void onStdInReceived(final String stdIn) {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+                TextView tv = new TextView(getActivity());
+                tv.setText(stdIn);
+                tv.setTextColor(getResources().getColor(R.color.terminal_green));
+                tv.setTextSize(14);
+                tv.setTypeface(Typeface.DEFAULT_BOLD);
+                mInnerTerminalLL.addView(tv, mInnerTerminalLL.getChildCount() - 2);
+            }
+        });
+
     }
 
     /**

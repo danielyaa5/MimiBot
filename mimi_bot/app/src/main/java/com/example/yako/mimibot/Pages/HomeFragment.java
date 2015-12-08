@@ -120,6 +120,8 @@ public class HomeFragment extends Fragment {
             public void onClick(View v) {
                 if (SshManager.connectionStatus.toInt() == 2) {
                     Log.i(TAG, "Disconnect Btn Pushed");
+                    SshManager.removeStdReceivedListener();
+                    SshManager.disconnect();
                 } else {
                     SharedPreferences settings = getActivity().getSharedPreferences(PREFS_NAME, 0);
                     Log.i(TAG, "Connect Btn Pushed");
@@ -243,9 +245,12 @@ public class HomeFragment extends Fragment {
                 if (SshManager.connectionStatus.toInt() == 2) {
                     mConnectBtn.setText("Disconnect");
                     Toast.makeText(mActivity, "CONNECTED to MimiBot!", Toast.LENGTH_SHORT).show();
-                } else {
+                } else if (SshManager.connectionStatus.toInt() == 3){
                     mConnectBtn.setText("Try Again");
                     Toast.makeText(mActivity, "UNABLE TO CONNECT to MimiBot!", Toast.LENGTH_SHORT).show();
+                } else if (SshManager.connectionStatus.toInt() == 0) {
+                    mConnectBtn.setText("Connect");
+                    Toast.makeText(mActivity, "Disconnected from MimiBot!", Toast.LENGTH_SHORT).show();
                 }
                 mConnectBtn.setVisibility(View.VISIBLE);
             }

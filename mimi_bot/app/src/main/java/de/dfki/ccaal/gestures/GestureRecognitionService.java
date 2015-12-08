@@ -170,7 +170,7 @@ public class GestureRecognitionService extends Service implements GestureRecorde
 					e.printStackTrace();
 				}
 			}
-			System.out.println("Trained");
+			Log.i(TAG, "Trained");
 		} else if (isClassifying) {
 			recorder.pause(true);
 			Distribution distribution = classifier.classifySignal(activeTrainingSet, new Gesture(values, null));
