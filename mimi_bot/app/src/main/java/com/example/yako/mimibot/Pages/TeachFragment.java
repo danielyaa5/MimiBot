@@ -164,15 +164,14 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
                 if (MainActivity.recognitionService != null) {
                     try {
                         if (!MainActivity.recognitionService.isLearning()) {
-                            Log.i(TAG, "Started Training");
-                            mStartTrainButton.setText("Stop Training");
+                            Log.i(TAG, "Start Training Pressed");
 //                            gestureNameText.setEnabled(false);
 //                            deleteTrainingSetButton.setEnabled(false);
 //                            changeTrainingSetButton.setEnabled(false);
 //                            trainingSetText.setEnabled(false);
                             activeGesture = null;
                             if (mTrainingSetSpin.getSelectedItem().toString().equals(CUSTOM_TRAINING_SET)) {
-                                if (mEditGestureEdit.getText().toString().trim().length() < 1) {
+                                if (mEditGestureEdit.getText().toString().trim().length() > 1) {
                                     activeGesture = mEditGestureEdit.getText().toString();
                                     View view = getActivity().getCurrentFocus();
                                     if (view != null) {
@@ -191,6 +190,7 @@ public class TeachFragment extends Fragment implements EditTrainedGesturesAdapte
                             if (activeGesture != null) {
                                 MainActivity.recognitionService.startLearnMode(MainActivity.activeTrainingSet, activeGesture);
                                 mTrainingSetSpin.setEnabled(false);
+                                mStartTrainButton.setText("Stop Training");
                             }
                         } else {
                             Log.i(TAG, "Stopped Training");

@@ -3,13 +3,68 @@
     android:layout_height="match_parent"
     tools:context="com.example.yako.mimibot.pages.RemoteCtrlFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-
     <LinearLayout
+        android:id="@+id/remote_ctrl_ll"
         android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/remote_gesture_btns_ll"
-        android:gravity="center">
+        android:weightSum="2">
+
+        <LinearLayout
+            android:id="@+id/terminal_ll"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:clickable="true"
+            android:padding="14dp"
+            android:layout_weight="1"
+            android:background="@drawable/terminal_window">
+            <ScrollView
+                android:id="@+id/terminal_scroll"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:duplicateParentState="true"
+                android:clickable="false"
+                android:fillViewport="true">
+                <LinearLayout
+                    android:clickable="false"
+                    android:orientation="vertical"
+                    android:duplicateParentState="true"
+                    android:id="@+id/inner_terminal_ll"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:id="@+id/remote_gesture_btns_ll">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Press anywhere in the box to start typing an SSH command. Or...."
+                android:id="@+id/press_anywhere_txt"
+                android:layout_marginBottom="16dp"
+                android:layout_marginTop="8dp"
+                android:textStyle="italic"
+                android:layout_marginLeft="16dp"
+                android:layout_gravity="left" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Send A Gesture"
+                android:id="@+id/textView2"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginBottom="16dp" />
+        </LinearLayout>
     </LinearLayout>
+
 </FrameLayout>

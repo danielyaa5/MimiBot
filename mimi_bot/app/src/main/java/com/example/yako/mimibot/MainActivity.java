@@ -61,7 +61,7 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
     private final ServiceConnection serviceConnection = setupGestureConnection();
     private IBinder gestureListenerStub = setupGestureListener();
 
-    private int mCurrFrag = 0;
+    public static int mCurrFrag = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

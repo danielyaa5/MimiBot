@@ -23,7 +23,8 @@ public class SshManager {
     private static final String TAG = "SshManager";
 
     public static SshConnectStat connectionStatus = SshConnectStat.DISCONNECTED;
-    ;
+
+    private static OnStdInReceivedListener mListener = null;
 
     public enum SshConnectStat {
         DISCONNECTED("Disconnected", 0),
@@ -48,6 +49,11 @@ public class SshManager {
 
     public interface OnTaskCompleted{
         void onTaskCompleted();
+    }
+
+
+    public static void setOnStdReceivedListener(OnStdInReceivedListener listener) {
+        mListener = listener;
     }
 
     public static void attemptConnection(String username, String password, String hostname, int port, SshConnectResponse listener) {
@@ -84,7 +90,10 @@ public class SshManager {
 
         channelssh.connect();
 
-
+        Log.i("Received Command", commander.toString());
+        if (MainActivity.mCurrFrag == 6 && mListener != null) {
+            mListener.onStdInReceived("hlakdfjlasdjf");
+        }
         //commander.close();        //session.disconnect();
         return baos.toString();
     }
@@ -139,6 +148,10 @@ public class SshManager {
             if (listener != null) listener.sshConnectCb();
             Log.i(TAG, "Finished connection task, result = " + SshManager.connectionStatus.toString());
         }
+    }
+
+    public interface OnStdInReceivedListener {
+        public void onStdInReceived(String stdIn);
     }
 
 
