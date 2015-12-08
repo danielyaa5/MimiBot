@@ -3,9 +3,12 @@ package com.example.yako.mimibot.pages;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.LinearLayout;
 
 import com.example.yako.mimibot.R;
 
@@ -18,6 +21,8 @@ import com.example.yako.mimibot.R;
  * create an instance of this fragment.
  */
 public class RemoteCtrlFragment extends Fragment {
+    private static final String TAG = "RemoteCtrlFragment";
+
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +33,8 @@ public class RemoteCtrlFragment extends Fragment {
     private String mParam2;
 
     private OnFragmentInteractionListener mListener;
+
+    private LinearLayout mRemoteGestureBtnsLL;
 
     /**
      * Use this factory method to create a new instance of
@@ -64,7 +71,35 @@ public class RemoteCtrlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_remote_ctrl, container, false);
+        View view = inflater.inflate(R.layout.fragment_remote_ctrl, container, false);
+
+        mRemoteGestureBtnsLL = (LinearLayout) view.findViewById(R.id.remote_gesture_btns_ll);
+
+        String[] mimiGestures = getActivity().getResources().getStringArray(R.array.mimi_capable_gestures_array);
+
+        LinearLayout mimiBtnsLL = null;
+        Button mimiBtn;
+        for (int i=0; i < mimiGestures.length; i++) {
+            if (i%2 == 0) {
+                mimiBtnsLL = new LinearLayout(getActivity());
+                mimiBtnsLL.setOrientation(LinearLayout.HORIZONTAL);
+                mimiBtnsLL.setGravity(Gravity.CENTER_HORIZONTAL);
+                mimiBtnsLL.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            }
+
+            mimiBtn = new Button(getActivity());
+            mimiBtn.setText(mimiGestures[i]);
+            mimiBtn.setHeight(100);
+            mimiBtn.setWidth(200);
+            mimiBtn.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
+            mimiBtnsLL.addView(mimiBtn);
+
+            if (i%2 == 1) {
+                mRemoteGestureBtnsLL.addView(mimiBtnsLL);
+            }
+        }
+
+        return view;
     }
 
     @Override

@@ -4,7 +4,12 @@
     tools:context="com.example.yako.mimibot.pages.RemoteCtrlFragment">
 
     <!-- TODO: Update blank fragment layout -->
-    <TextView android:layout_width="match_parent" android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
 
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/remote_gesture_btns_ll"
+        android:gravity="center">
+    </LinearLayout>
 </FrameLayout>
