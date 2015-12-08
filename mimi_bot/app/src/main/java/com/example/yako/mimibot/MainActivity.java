@@ -347,13 +347,13 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
                                         SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm1");
                                         break;
                                     case "SALUTE":
-                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
                                         break;
                                     case "HAND-SHAKE":
-                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm4");
                                         break;
                                     case "SPIN-FOREARM":
-                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
                                         break;
                                     default:
                                         Log.i(TAG, "unrecognized button");

@@ -129,13 +129,13 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
                         case 0:
                             SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm1");
                             break;
-                        case 1:
+                        case 2:
                             SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
                             break;
-                        case 2:
+                        case 3:
                             SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
                             break;
-                        case 3:
+                        case 1:
                             SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
                             break;
                         default:
