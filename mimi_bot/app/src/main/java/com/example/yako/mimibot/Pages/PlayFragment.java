@@ -12,6 +12,7 @@ import android.widget.Button;
 
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
+import com.example.yako.mimibot.SshManager;
 import com.example.yako.mimibot.adapters.TrainedGesturesAdapter;
 
 import java.util.List;
@@ -27,6 +28,10 @@ import java.util.List;
  */
 public class PlayFragment extends Fragment {
     private static final String TAG = "PlayFragment";
+
+    private static final String REMOTE_DICONNECTED_BTN_TXT = "REMOTE Control Mimi\n(must be connected)";
+
+    private static final String GESTURE_CTRL_DISCONNECTED_BTN_TXT = "GESTURE Control Mimi\n(must be connected)";
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -96,6 +101,14 @@ public class PlayFragment extends Fragment {
         mGestureCtrlBtn = (Button) view.findViewById(R.id.gesture_ctrl_btn);
         mRemoteCtrlBtn = (Button) view.findViewById(R.id.remote_ctrl_btn);
         mTestCustomBtn = (Button) view.findViewById(R.id.test_gesture_btn);
+
+        if (SshManager.connectionStatus.toInt() != 2) {
+            mGestureCtrlBtn.append("\n(must be connected)");
+            mGestureCtrlBtn.setEnabled(false);
+
+            mRemoteCtrlBtn.append("\n(must be connect)");
+            mRemoteCtrlBtn.setEnabled(false);
+        }
 
         mGestureCtrlBtn.setOnClickListener(new View.OnClickListener() {
             @Override

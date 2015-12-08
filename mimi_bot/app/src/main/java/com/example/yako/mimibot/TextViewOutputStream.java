@@ -15,10 +15,11 @@ public class TextViewOutputStream extends OutputStream {
 
     @Override
     public void write(byte[] buffer, int offset, int length) throws IOException {
-        Log.i(TAG, "Receiving SSH text, last command was " + SshManager.last_command);
         final String text = new String(buffer, offset, length);
+        Log.i(TAG, "Receiving SSH text --> " + text);
+        Log.i(TAG, "Last command was --> " + SshManager.last_command);
         String[] lines = text.split("[\\r\\n]+");
-        Log.i(TAG, "All text: " + Arrays.toString(lines));
+        Log.i(TAG, "Split text: " + Arrays.toString(lines));
 
         for (String line : lines) {
             Log.i(TAG, "Ssh Text Received: " + line);

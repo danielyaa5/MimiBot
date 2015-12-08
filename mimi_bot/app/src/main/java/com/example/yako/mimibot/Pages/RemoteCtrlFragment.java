@@ -249,6 +249,7 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
                 tv.setTextSize(14);
                 tv.setTypeface(Typeface.DEFAULT_BOLD);
                 mInnerTerminalLL.addView(tv, mInnerTerminalLL.getChildCount() - 2);
+                mTerminalScroll.fullScroll(View.FOCUS_DOWN);
             }
         });
 
