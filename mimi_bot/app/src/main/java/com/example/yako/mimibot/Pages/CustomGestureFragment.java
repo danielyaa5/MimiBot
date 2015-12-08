@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import com.example.yako.mimibot.MainActivity;
 import com.example.yako.mimibot.R;
@@ -46,6 +47,8 @@ public class CustomGestureFragment extends Fragment {
     private Button mTeachBtn;
     private LinearLayout mNoGesturesLL, mNowListeningLL;
     private ListView mCommandHistoryList;
+
+    private static TextView mNoCommandsRecognizedTxt = null;
 
     private static ArrayAdapter<String> mCommandHistoryAdapter = null;
 
@@ -99,6 +102,7 @@ public class CustomGestureFragment extends Fragment {
         mNoGesturesLL = (LinearLayout) view.findViewById(R.id.cg_no_gestures_ll);
         mNowListeningLL = (LinearLayout) view.findViewById(R.id.now_listening_ll);
         mCommandHistoryList = (ListView) view.findViewById(R.id.command_history_list);
+        mNoCommandsRecognizedTxt = (TextView) view.findViewById(R.id.no_commands_recognized_txt);
 
         List<String> gestures = null;
         try {
@@ -149,8 +153,14 @@ public class CustomGestureFragment extends Fragment {
 
     public static void addCommand(String command) {
         commandHistory.add(0, command);
+        if (commandHistory.size() > 0) {
+            if (mNoCommandsRecognizedTxt != null) {
+                mNoCommandsRecognizedTxt.setVisibility(View.GONE);
+            }
+        }
         mCommandHistoryAdapter.notifyDataSetChanged();
     }
+
 
     /**
      * This interface must be implemented by activities that contain this

@@ -342,6 +342,22 @@ public class MainActivity extends Activity implements HomeFragment.OnFragmentInt
                             if (activeGestures.contains(bestMatch)) {
                                 Toast.makeText(MainActivity.this, String.format("Recognized %s gesture", bestMatch), Toast.LENGTH_LONG).show();
                                 Log.i(TAG, "Gesture is in active gesture list.");
+                                switch (bestMatch) {
+                                    case "SAY-HI":
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm1");
+                                        break;
+                                    case "SALUTE":
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
+                                        break;
+                                    case "HAND-SHAKE":
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+                                        break;
+                                    case "SPIN-FOREARM":
+                                        SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+                                        break;
+                                    default:
+                                        Log.i(TAG, "unrecognized button");
+                                }
                             } else {
                                 Log.i(TAG, "Gesture is not in active gesture list.");
                             }

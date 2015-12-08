@@ -125,6 +125,22 @@ public class RemoteCtrlFragment extends Fragment implements SshManager.OnStdInRe
                 @Override
                 public void onClick(View v) {
                     Log.i(TAG, "Button " + String.valueOf(j) + " pressed");
+                    switch (j) {
+                        case 0:
+                            SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm1");
+                            break;
+                        case 1:
+                            SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm2");
+                            break;
+                        case 2:
+                            SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+                            break;
+                        case 3:
+                            SshManager.sendCommand("rosrun example_robot_interface test_abby_senderm3");
+                            break;
+                        default:
+                            Log.i(TAG, "unrecognized button");
+                    }
                 }
             });
 
