@@ -1,7 +1,7 @@
 # MimiBot
 Android gesture recognition used to control robot through SSH
 
-<a href="https://youtu.be/7GmAC8g7FMA" target="_blank"><img src="https://youtu.be/7GmAC8g7FMA" 
+<a href="https://youtu.be/7GmAC8g7FMA" target="_blank"><img src="https://www.youtube.com/watch?v=7GmAC8g7FMA&" 
 alt="MimiBot Demo" width="240" height="180" border="10" /></a>
 
 <br><b>Project Dependencies</b>
